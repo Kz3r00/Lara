@@ -1,0 +1,620 @@
+<!DOCTYPE html>
+<html lang="pt-br">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0, user-scalable=yes">
+    <title>Lugar Seguro - Sala Mística de Jogos</title>
+    <link rel="stylesheet" href="estilo-global.css">
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+
+        body {
+            background: linear-gradient(135deg, #0f0c29, #302b63, #24243e);
+            min-height: 100vh;
+            font-family: 'Segoe UI', 'Helvetica Neue', system-ui, sans-serif;
+            padding: 20px;
+        }
+
+        .container {
+            max-width: 1200px;
+            margin: 0 auto;
+        }
+
+        /* Cabeçalho */
+        .titulo-principal {
+            text-align: center;
+            color: #e0b0ff;
+            margin-bottom: 20px;
+            text-shadow: 0 0 10px rgba(155, 0, 255, 0.5);
+            font-size: 2rem;
+        }
+
+        .subtitulo {
+            text-align: center;
+            color: #b8a9ff;
+            margin-bottom: 30px;
+            font-size: 0.9rem;
+        }
+
+        /* Abas */
+        .tabs {
+            display: flex;
+            flex-wrap: wrap;
+            gap: 10px;
+            justify-content: center;
+            margin-bottom: 25px;
+        }
+
+        .tab-btn {
+            background: rgba(30, 20, 60, 0.8);
+            backdrop-filter: blur(10px);
+            border: 1px solid #8b5cf6;
+            padding: 12px 24px;
+            border-radius: 50px;
+            color: #d9c5ff;
+            font-weight: bold;
+            cursor: pointer;
+            transition: 0.2s;
+            font-size: 0.9rem;
+        }
+
+        .tab-btn.ativo {
+            background: #8b5cf6;
+            color: white;
+            box-shadow: 0 0 15px #8b5cf6;
+        }
+
+        .tab-conteudo {
+            display: none;
+            background: rgba(20, 15, 45, 0.7);
+            backdrop-filter: blur(12px);
+            border-radius: 40px;
+            padding: 25px;
+            border: 1px solid rgba(139, 92, 246, 0.3);
+            animation: fadeIn 0.3s ease;
+        }
+
+        .tab-conteudo.ativo {
+            display: block;
+        }
+
+        @keyframes fadeIn {
+            from { opacity: 0; transform: translateY(10px);}
+            to { opacity: 1; transform: translateY(0);}
+        }
+
+        /* Cards */
+        .card-jogo {
+            background: rgba(0,0,0,0.4);
+            border-radius: 30px;
+            padding: 20px;
+            margin-bottom: 20px;
+        }
+
+        h2 {
+            color: #c4b5fd;
+            margin-bottom: 15px;
+            font-size: 1.4rem;
+        }
+
+        label {
+            display: block;
+            color: #b9a9ff;
+            margin: 12px 0 5px;
+            font-size: 0.85rem;
+        }
+
+        input, select, textarea {
+            width: 100%;
+            padding: 10px;
+            border-radius: 20px;
+            border: none;
+            background: #2a1e4a;
+            color: white;
+            font-size: 0.9rem;
+        }
+
+        .campo-checkbox {
+            display: flex;
+            align-items: center;
+            gap: 10px;
+            margin: 15px 0;
+        }
+
+        .campo-checkbox input {
+            width: auto;
+        }
+
+        button {
+            background: #8b5cf6;
+            color: white;
+            border: none;
+            padding: 12px 24px;
+            border-radius: 40px;
+            font-weight: bold;
+            cursor: pointer;
+            margin-top: 12px;
+            transition: 0.2s;
+        }
+
+        button:active {
+            transform: scale(0.96);
+        }
+
+        .resultado {
+            background: #1e143a;
+            border-radius: 30px;
+            padding: 20px;
+            margin-top: 20px;
+            text-align: center;
+            font-size: 2rem;
+            font-weight: bold;
+            color: #f0e6ff;
+            border: 1px solid #8b5cf6;
+        }
+
+        .opcoes-roleta {
+            margin-top: 15px;
+            max-height: 300px;
+            overflow-y: auto;
+        }
+
+        .opcao-item {
+            display: flex;
+            gap: 8px;
+            margin-bottom: 8px;
+        }
+
+        .opcao-item input {
+            flex: 1;
+        }
+
+        .btn-pequeno {
+            padding: 8px 16px;
+            font-size: 0.8rem;
+            background: #e11d48;
+        }
+
+        /* Tabuleiro Cobras e Escadas */
+        .tabuleiro {
+            display: grid;
+            grid-template-columns: repeat(10, 1fr);
+            gap: 2px;
+            background: #1a0f2e;
+            padding: 10px;
+            border-radius: 20px;
+            margin: 20px 0;
+            overflow-x: auto;
+        }
+
+        .casa {
+            background: #2a1a4a;
+            aspect-ratio: 1;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-size: 0.7rem;
+            font-weight: bold;
+            border-radius: 8px;
+            position: relative;
+            color: #c9b6ff;
+            transition: 0.1s;
+        }
+
+        .casa.escada {
+            background: linear-gradient(135deg, #10b981, #059669);
+        }
+
+        .casa.cobra {
+            background: linear-gradient(135deg, #ef4444, #b91c1c);
+        }
+
+        .peca {
+            position: absolute;
+            width: 24px;
+            height: 24px;
+            border-radius: 50%;
+            bottom: 2px;
+            right: 2px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-size: 12px;
+            font-weight: bold;
+        }
+
+        .info-jogo {
+            display: flex;
+            flex-wrap: wrap;
+            gap: 15px;
+            justify-content: space-between;
+            margin-bottom: 15px;
+        }
+
+        .vez-info {
+            background: #2a1e4a;
+            padding: 10px 18px;
+            border-radius: 40px;
+            color: #f0e6ff;
+        }
+
+        @media (max-width: 700px) {
+            .casa {
+                font-size: 0.5rem;
+            }
+            .peca {
+                width: 16px;
+                height: 16px;
+                font-size: 8px;
+            }
+        }
+
+        .btn-voltar {
+            display: inline-block;
+            background: #4a3a7a;
+            margin-top: 20px;
+            text-decoration: none;
+            text-align: center;
+        }
+
+        .msg-vencedor {
+            background: #fbbf24;
+            color: #1e1b4b;
+            padding: 12px;
+            border-radius: 40px;
+            text-align: center;
+            margin-top: 15px;
+            font-weight: bold;
+        }
+    </style>
+</head>
+<body>
+
+<div class="container">
+    <h1 class="titulo-principal">🎲 Sala Mística de Jogos 🃏</h1>
+    <div class="subtitulo">✨ Roleta, Dados, Moeda e Cobras & Escadas — tudo místico e personalizável ✨</div>
+
+    <div class="tabs">
+        <button class="tab-btn ativo" data-tab="roleta">🎡 Roleta Personalizada</button>
+        <button class="tab-btn" data-tab="dados">🎲 Dados Místicos</button>
+        <button class="tab-btn" data-tab="moeda">🪙 Cara ou Coroa</button>
+        <button class="tab-btn" data-tab="cobras">🐍 Cobras & Escadas</button>
+    </div>
+
+    <!-- Roleta -->
+    <div id="roleta" class="tab-conteudo ativo">
+        <div class="card-jogo">
+            <h2>🎡 Crie sua Roleta Mágica</h2>
+            <label>📛 Nome da roleta:</label>
+            <input type="text" id="roletaNome" placeholder="Ex: Surpresas do Coração" value="Surpresas Místicas">
+            
+            <label>🔢 Quantas opções?</label>
+            <input type="number" id="roletaQtd" min="2" max="20" value="6">
+            <button id="gerarOpcoes">✨ Gerar campos</button>
+
+            <div id="opcoesContainer" class="opcoes-roleta"></div>
+            
+            <button id="girarRoleta" style="background: #ec489a;">🎡 Girar Roleta</button>
+            <div id="resultadoRoleta" class="resultado">Aguardando giro...</div>
+        </div>
+    </div>
+
+    <!-- Dados -->
+    <div id="dados" class="tab-conteudo">
+        <div class="card-jogo">
+            <h2>🎲 Dados Místicos</h2>
+            <label>⚀ Quantos lados? (1 a 100)</label>
+            <input type="number" id="dadosLados" min="1" max="100" value="6">
+            
+            <div class="campo-checkbox">
+                <input type="checkbox" id="dadoFalsoCheck">
+                <label>🔮 Dado falso: sempre cair em...</label>
+                <input type="number" id="dadoFalsoValor" min="1" max="100" value="6" disabled style="width: 80px;">
+            </div>
+
+            <div class="campo-checkbox">
+                <input type="checkbox" id="vincularDado">
+                <label>🔗 Vincular este dado ao jogo Cobras & Escadas</label>
+            </div>
+
+            <button id="rolarDado">🎲 Rolar Dado</button>
+            <div id="resultadoDado" class="resultado">Aguardando...</div>
+        </div>
+    </div>
+
+    <!-- Cara ou Coroa -->
+    <div id="moeda" class="tab-conteudo">
+        <div class="card-jogo">
+            <h2>🪙 Cara ou Coroa Enganosa</h2>
+            <div class="campo-checkbox">
+                <input type="checkbox" id="moedaFalsaCheck">
+                <label>🎭 Sempre dar...</label>
+                <select id="moedaFalsaValor">
+                    <option value="cara">Cara</option>
+                    <option value="coroa">Coroa</option>
+                </select>
+            </div>
+            <button id="girarMoeda">🪙 Girar Moeda</button>
+            <div id="resultadoMoeda" class="resultado">Aguardando...</div>
+        </div>
+    </div>
+
+    <!-- Cobras e Escadas -->
+    <div id="cobras" class="tab-conteudo">
+        <div class="card-jogo">
+            <h2>🐍 Cobras & Escadas Místico</h2>
+            <label>👥 Número de jogadores (1 a 4)</label>
+            <input type="number" id="numJogadores" min="1" max="4" value="2">
+            <button id="iniciarJogo">🐍 Iniciar / Reiniciar Jogo</button>
+
+            <div id="tabuleiroContainer" class="tabuleiro"></div>
+            <div id="jogoInfo" class="info-jogo"></div>
+            <div id="jogoControles"></div>
+            <div id="vencedorMsg"></div>
+        </div>
+    </div>
+
+    <a href="index.html" class="btn btn-voltar">← Voltar para o início</a>
+</div>
+
+<script>
+    // ============================================================
+    // 1. ROLETA PERSONALIZADA
+    // ============================================================
+    let opcoesAtuais = [];
+
+    function renderizarCamposRoleta() {
+        const qtd = parseInt(document.getElementById('roletaQtd').value);
+        const container = document.getElementById('opcoesContainer');
+        container.innerHTML = '';
+        opcoesAtuais = [];
+        for (let i = 0; i < qtd; i++) {
+            const div = document.createElement('div');
+            div.className = 'opcao-item';
+            div.innerHTML = `
+                <input type="text" class="opcao-texto" placeholder="Opção ${i+1}" value="Opção ${i+1}">
+                <button class="btn-pequeno remover-opcao" data-index="${i}">❌</button>
+            `;
+            container.appendChild(div);
+        }
+        document.querySelectorAll('.remover-opcao').forEach(btn => {
+            btn.addEventListener('click', (e) => {
+                const idx = parseInt(btn.getAttribute('data-index'));
+                removerOpcao(idx);
+            });
+        });
+    }
+
+    function removerOpcao(index) {
+        const container = document.getElementById('opcoesContainer');
+        if (container.children[index]) {
+            container.children[index].remove();
+            opcoesAtuais.splice(index, 1);
+        }
+    }
+
+    function obterOpcoesRoleta() {
+        const inputs = document.querySelectorAll('#opcoesContainer .opcao-texto');
+        return Array.from(inputs).map(inp => inp.value.trim()).filter(t => t !== "");
+    }
+
+    document.getElementById('gerarOpcoes').addEventListener('click', renderizarCamposRoleta);
+    document.getElementById('girarRoleta').addEventListener('click', () => {
+        const opcoes = obterOpcoesRoleta();
+        if (opcoes.length === 0) {
+            document.getElementById('resultadoRoleta').innerHTML = "❌ Adicione pelo menos uma opção!";
+            return;
+        }
+        const sorteado = opcoes[Math.floor(Math.random() * opcoes.length)];
+        document.getElementById('resultadoRoleta').innerHTML = `🎡 Caiu em: <span style="color:#f0f;">${sorteado}</span> 🎡`;
+    });
+
+    // ============================================================
+    // 2. DADOS MÍSTICOS
+    // ============================================================
+    let dadoVinculado = false;
+    let ultimoResultadoDado = null;
+
+    document.getElementById('dadoFalsoCheck').addEventListener('change', (e) => {
+        document.getElementById('dadoFalsoValor').disabled = !e.target.checked;
+    });
+
+    document.getElementById('vincularDado').addEventListener('change', (e) => {
+        dadoVinculado = e.target.checked;
+    });
+
+    function rolarDado() {
+        const lados = parseInt(document.getElementById('dadosLados').value);
+        const falsoAtivo = document.getElementById('dadoFalsoCheck').checked;
+        let resultado;
+        
+        if (falsoAtivo) {
+            resultado = parseInt(document.getElementById('dadoFalsoValor').value);
+            resultado = Math.min(resultado, lados);
+            resultado = Math.max(resultado, 1);
+        } else {
+            resultado = Math.floor(Math.random() * lados) + 1;
+        }
+        
+        ultimoResultadoDado = resultado;
+        document.getElementById('resultadoDado').innerHTML = `🎲 Resultado: <span style="font-size:2rem;">${resultado}</span> 🎲`;
+        return resultado;
+    }
+
+    document.getElementById('rolarDado').addEventListener('click', rolarDado);
+
+    // ============================================================
+    // 3. CARA OU COROA
+    // ============================================================
+    document.getElementById('girarMoeda').addEventListener('click', () => {
+        const falsa = document.getElementById('moedaFalsaCheck').checked;
+        let resultado;
+        if (falsa) {
+            resultado = document.getElementById('moedaFalsaValor').value;
+        } else {
+            resultado = Math.random() < 0.5 ? 'cara' : 'coroa';
+        }
+        const texto = resultado === 'cara' ? '🪙 CARA' : '🪙 COROA';
+        document.getElementById('resultadoMoeda').innerHTML = `${texto}`;
+        setTimeout(() => {
+            const el = document.getElementById('resultadoMoeda');
+            if (el.innerHTML !== "Aguardando...") setTimeout(() => el.innerHTML = "Aguardando...", 2000);
+        }, 3000);
+    });
+
+    // ============================================================
+    // 4. COBRAS E ESCADAS (gerado por código)
+    // ============================================================
+    let jogoAtivo = false;
+    let numeroJogadores = 2;
+    let posicoes = [];
+    let vez = 0;
+    let tabuleiro = [];
+    let escadasCobras = {};
+
+    function gerarTabuleiroEC() {
+        // 100 casas
+        let mapa = {};
+        // Escadas (sobe)
+        const escadas = [[3,21], [8,30], [28,84], [58,77], [80,100], [1,38], [4,14], [9,31]];
+        // Cobras (desce)
+        const cobras = [[98,40], [95,75], [92,88], [65,42], [54,19], [36,1], [49,21], [62,18]];
+        
+        escadas.forEach(e => { mapa[e[0]] = { fim: e[1], tipo: 'escada' }; });
+        cobras.forEach(c => { mapa[c[0]] = { fim: c[1], tipo: 'cobra' }; });
+        return mapa;
+    }
+
+    function desenharTabuleiro() {
+        const container = document.getElementById('tabuleiroContainer');
+        container.innerHTML = '';
+        const mapa = escadasCobras;
+        for (let i = 1; i <= 100; i++) {
+            const casa = document.createElement('div');
+            casa.className = 'casa';
+            casa.innerText = i;
+            if (mapa[i]) {
+                if (mapa[i].tipo === 'escada') casa.classList.add('escada');
+                else casa.classList.add('cobra');
+                casa.title = mapa[i].tipo === 'escada' ? `Escada para ${mapa[i].fim}` : `Cobra para ${mapa[i].fim}`;
+            }
+            // adicionar peoes
+            for (let p = 0; p < numeroJogadores; p++) {
+                if (posicoes[p] === i) {
+                    const peca = document.createElement('div');
+                    peca.className = 'peca';
+                    peca.style.background = `hsl(${p * 90}, 70%, 55%)`;
+                    peca.innerText = p+1;
+                    casa.appendChild(peca);
+                }
+            }
+            container.appendChild(casa);
+        }
+    }
+
+    function atualizarInfoJogo() {
+        const infoDiv = document.getElementById('jogoInfo');
+        infoDiv.innerHTML = `<div class="vez-info">🎲 Vez do Jogador ${vez+1}</div>`;
+        const controlesDiv = document.getElementById('jogoControles');
+        if (jogoAtivo) {
+            controlesDiv.innerHTML = `<button id="jogarVezBtn">🎲 Rolar Dado (Jogador ${vez+1})</button>`;
+            document.getElementById('jogarVezBtn').addEventListener('click', () => {
+                if (!jogoAtivo) return;
+                let resultado;
+                if (dadoVinculado && ultimoResultadoDado !== null) {
+                    resultado = ultimoResultadoDado;
+                    alert(`🎲 Usando dado vinculado: caiu ${resultado}`);
+                } else {
+                    resultado = Math.floor(Math.random() * 6) + 1;
+                }
+                moverJogador(vez, resultado);
+            });
+        } else {
+            controlesDiv.innerHTML = '<button disabled>Jogo não iniciado</button>';
+        }
+    }
+
+    function moverJogador(jogador, passos) {
+        let novaPos = posicoes[jogador] + passos;
+        if (novaPos > 100) novaPos = posicoes[jogador]; // não ultrapassa
+        let resultadoMsg = `Jogador ${jogador+1} rolou ${passos} e foi de ${posicoes[jogador]} para ${novaPos}`;
+        
+        if (escadasCobras[novaPos]) {
+            const alvo = escadasCobras[novaPos];
+            const tipo = alvo.tipo === 'escada' ? '✨ Escada ✨' : '🐍 Cobra 🐍';
+            novaPos = alvo.fim;
+            resultadoMsg += ` → ${tipo}! Vai para ${novaPos}`;
+        }
+        posicoes[jogador] = novaPos;
+        if (novaPos === 100) {
+            document.getElementById('vencedorMsg').innerHTML = `<div class="msg-vencedor">🏆 JOGADOR ${jogador+1} VENCEU! 🏆</div>`;
+            jogoAtivo = false;
+            desenharTabuleiro();
+            atualizarInfoJogo();
+            return;
+        }
+        vez = (vez + 1) % numeroJogadores;
+        desenharTabuleiro();
+        atualizarInfoJogo();
+        const msg = document.createElement('div');
+        msg.style.background = '#2a1e4a';
+        msg.style.padding = '5px';
+        msg.style.margin = '5px';
+        msg.style.borderRadius = '20px';
+        msg.innerText = resultadoMsg;
+        document.getElementById('jogoInfo').appendChild(msg);
+        setTimeout(() => msg.remove(), 3000);
+    }
+
+    function iniciarNovoJogo() {
+        numeroJogadores = parseInt(document.getElementById('numJogadores').value);
+        if (numeroJogadores < 1) numeroJogadores = 1;
+        if (numeroJogadores > 4) numeroJogadores = 4;
+        posicoes = new Array(numeroJogadores).fill(1);
+        vez = 0;
+        escadasCobras = gerarTabuleiroEC();
+        jogoAtivo = true;
+        document.getElementById('vencedorMsg').innerHTML = '';
+        desenharTabuleiro();
+        atualizarInfoJogo();
+        if (numeroJogadores === 1) {
+            // Bot simples: rola dado automaticamente após jogada do humano
+            function botJoga() {
+                if (!jogoAtivo) return;
+                if (vez !== 0) {
+                    const resultadoBot = Math.floor(Math.random() * 6) + 1;
+                    moverJogador(vez, resultadoBot);
+                    setTimeout(botJoga, 800);
+                } else {
+                    setTimeout(botJoga, 500);
+                }
+            }
+            botJoga();
+        }
+    }
+
+    document.getElementById('iniciarJogo').addEventListener('click', iniciarNovoJogo);
+
+    // ============================================================
+    // ABAS
+    // ============================================================
+    const tabs = document.querySelectorAll('.tab-btn');
+    const contents = document.querySelectorAll('.tab-conteudo');
+    tabs.forEach(btn => {
+        btn.addEventListener('click', () => {
+            const tabId = btn.getAttribute('data-tab');
+            tabs.forEach(b => b.classList.remove('ativo'));
+            btn.classList.add('ativo');
+            contents.forEach(c => c.classList.remove('ativo'));
+            document.getElementById(tabId).classList.add('ativo');
+        });
+    });
+
+    renderizarCamposRoleta();
+</script>
+</body>
+</html>

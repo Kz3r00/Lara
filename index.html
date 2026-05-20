@@ -1,0 +1,270 @@
+<!DOCTYPE html>
+<html lang="pt-br">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0, user-scalable=yes">
+    <title>Lugar Seguro - Tela Principal</title>
+    <link rel="stylesheet" href="estilo-global.css">
+    <style>
+        /* Estilos específicos APENAS para a tela principal (posicionamento absoluto dos botões) */
+        body {
+            min-height: 100vh;
+            background: linear-gradient(135deg, #e74c3c 0%, #3b5998 100%);
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-family: 'Segoe UI', 'Helvetica Neue', system-ui, sans-serif;
+            padding: 20px;
+        }
+
+        .container-principal {
+            position: relative;
+            width: 100%;
+            max-width: 600px;
+            height: 80vh;
+            min-height: 500px;
+            margin: 0 auto;
+        }
+
+        .btn-canto {
+            position: absolute;
+            padding: 12px 20px;
+            border: none;
+            border-radius: 60px;
+            font-size: 0.95rem;
+            font-weight: bold;
+            cursor: pointer;
+            background: rgba(255, 255, 255, 0.95);
+            backdrop-filter: blur(2px);
+            box-shadow: 0 8px 20px rgba(0,0,0,0.2);
+            transition: all 0.2s ease;
+            text-align: center;
+            min-width: 140px;
+            font-family: inherit;
+            color: #2c3e50;
+            text-decoration: none;
+            display: inline-flex;
+            align-items: center;
+            justify-content: center;
+            gap: 8px;
+        }
+
+        .btn-canto:active {
+            transform: scale(0.96);
+        }
+
+        .top-left {
+            top: 20px;
+            left: 20px;
+        }
+        .top-right {
+            top: 20px;
+            right: 20px;
+        }
+        .bottom-left {
+            bottom: 20px;
+            left: 20px;
+        }
+        .bottom-right {
+            bottom: 20px;
+            right: 20px;
+        }
+
+        .btn-central {
+            position: absolute;
+            top: 50%;
+            left: 50%;
+            transform: translate(-50%, -50%);
+            padding: 16px 28px;
+            font-size: 1.1rem;
+            min-width: 180px;
+            background: #ccc;
+            color: #666;
+            cursor: not-allowed;
+            border: none;
+            border-radius: 60px;
+            font-weight: bold;
+            transition: all 0.2s ease;
+        }
+
+        .btn-central.ativo {
+            background: #ffd966;
+            color: #2c3e50;
+            cursor: pointer;
+            box-shadow: 0 8px 25px rgba(0,0,0,0.3);
+        }
+
+        .btn-central.ativo:active {
+            transform: translate(-50%, -50%) scale(0.96);
+        }
+
+        @media (max-width: 480px) {
+            .btn-canto {
+                padding: 8px 12px;
+                font-size: 0.7rem;
+                min-width: 100px;
+            }
+            .container-principal {
+                height: 70vh;
+                min-height: 450px;
+            }
+            .btn-central {
+                padding: 12px 20px;
+                font-size: 0.9rem;
+                min-width: 150px;
+            }
+        }
+
+        @media (max-width: 380px) {
+            .btn-canto {
+                padding: 6px 8px;
+                font-size: 0.6rem;
+                min-width: 85px;
+            }
+        }
+
+        .assinatura {
+            position: fixed;
+            bottom: 8px;
+            left: 0;
+            right: 0;
+            text-align: center;
+            font-size: 12px;
+            color: rgba(255,255,240,0.7);
+            font-family: monospace;
+            pointer-events: none;
+        }
+    </style>
+</head>
+<body>
+
+<div class="container-principal">
+    <!-- Botões dos cantos - 4 páginas -->
+    <a href="mensagem.html" class="btn-canto top-left" data-canto="mensagem">✨ Mensagem do dia</a>
+    <a href="jogos.html" class="btn-canto top-right" data-canto="jogos">🎲 Sala de Jogos</a>
+    <a href="historias.html" class="btn-canto bottom-left" data-canto="historias">📖 Nossas Histórias</a>
+    <a href="missao.html" class="btn-canto bottom-right" data-canto="missao">🎯 Missão do Dia</a>
+
+    <!-- Botão central inicialmente desabilitado -->
+    <button class="btn-central" id="btnCentral" disabled>🔒 Desbloquear surpresa</button>
+</div>
+<div class="assinatura">Lugar Seguro — só para nós dois</div>
+
+<script>
+    // ============================================================
+    // SISTEMA DE DESBLOQUEIO DOS 4 CANTOS
+    // Cada canto precisa ser visitado pelo menos uma vez
+    // Os dados ficam salvos no localStorage do navegador
+    // ============================================================
+
+    // Chaves para salvar no localStorage
+    const STORAGE_KEY_VISITAS = 'lugarSeguro_visitas';
+    const STORAGE_KEY_SURPRESA = 'lugarSeguro_surpresaDesbloqueada';
+
+    // Estado dos cantos visitados
+    let cantosVisitados = {
+        mensagem: false,
+        jogos: false,
+        historias: false,
+        missao: false
+    };
+
+    // Carregar visitas salvas
+    function carregarVisitas() {
+        const salvo = localStorage.getItem(STORAGE_KEY_VISITAS);
+        if (salvo) {
+            try {
+                const parsed = JSON.parse(salvo);
+                cantosVisitados = { ...cantosVisitados, ...parsed };
+            } catch(e) { console.log("Erro ao carregar"); }
+        }
+    }
+
+    // Salvar visitas
+    function salvarVisitas() {
+        localStorage.setItem(STORAGE_KEY_VISITAS, JSON.stringify(cantosVisitados));
+    }
+
+    // Verificar se todos os 4 cantos foram visitados
+    function todosVisitados() {
+        return Object.values(cantosVisitados).every(v => v === true);
+    }
+
+    // Atualizar o estado do botão central
+    const btnCentral = document.getElementById('btnCentral');
+    
+    function atualizarBotaoCentral() {
+        if (todosVisitados()) {
+            btnCentral.disabled = false;
+            btnCentral.classList.add('ativo');
+            btnCentral.innerHTML = '💝 Surpresa especial 💝';
+            localStorage.setItem(STORAGE_KEY_SURPRESA, 'true');
+        } else {
+            btnCentral.disabled = true;
+            btnCentral.classList.remove('ativo');
+            btnCentral.innerHTML = '🔒 Desbloquear surpresa';
+        }
+    }
+
+    // Marcar um canto como visitado (chamado pela URL)
+    function marcarVisita(canto) {
+        if (cantosVisitados[canto] === false) {
+            cantosVisitados[canto] = true;
+            salvarVisitas();
+            atualizarBotaoCentral();
+            return true;
+        }
+        return false;
+    }
+
+    // Verificar se veio com parâmetro na URL (quando volta de uma página)
+    const urlParams = new URLSearchParams(window.location.search);
+    const cantoVisitado = urlParams.get('visitado');
+    if (cantoVisitado && cantosVisitados[cantoVisitado] === false) {
+        marcarVisita(cantoVisitado);
+        // Remove o parâmetro da URL para não marcar de novo se recarregar
+        window.history.replaceState({}, document.title, window.location.pathname);
+    }
+
+    // Botão central: abre surpresa
+    btnCentral.addEventListener('click', () => {
+        if (!btnCentral.disabled && btnCentral.classList.contains('ativo')) {
+            window.location.href = 'surpresa.html';
+        } else if (btnCentral.disabled) {
+            const faltam = Object.values(cantosVisitados).filter(v => v === false).length;
+            const nomes = [];
+            if (!cantosVisitados.mensagem) nomes.push("✨ Mensagem do dia");
+            if (!cantosVisitados.jogos) nomes.push("🎲 Sala de Jogos");
+            if (!cantosVisitados.historias) nomes.push("📖 Nossas Histórias");
+            if (!cantosVisitados.missao) nomes.push("🎯 Missão do Dia");
+            
+            let msg = "💭 Ainda não desbloqueado...\n\nVisite os 4 cantos:\n";
+            nomes.forEach(n => msg += `• ${n}\n`);
+            msg += "\nCada um pelo menos uma vez. Depois volte aqui! 💕";
+            alert(msg);
+        }
+    });
+
+    // Ao clicar em qualquer link de canto, adiciona o parâmetro "visitado" na URL
+    // para que quando voltar, o sistema saiba que aquele canto foi visitado
+    document.querySelectorAll('.btn-canto').forEach(link => {
+        link.addEventListener('click', function(e) {
+            const canto = this.getAttribute('data-canto');
+            if (canto && !cantosVisitados[canto]) {
+                const url = new URL(this.href);
+                url.searchParams.set('visitado', canto);
+                this.href = url.toString();
+            }
+        });
+    });
+
+    // Inicialização
+    carregarVisitas();
+    atualizarBotaoCentral();
+
+    // Debug (opcional, mostra no console quantos faltam)
+    console.log("Cantos visitados:", cantosVisitados);
+    console.log("Todos visitados?", todosVisitados());
+</script>
+</body>
+</html>

@@ -1,0 +1,277 @@
+<!DOCTYPE html>
+<html lang="pt-br">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0, user-scalable=yes">
+    <title>Lugar Seguro - Mensagem do Dia</title>
+    <link rel="stylesheet" href="estilo-global.css">
+    <style>
+        body {
+            transition: background 0.5s ease;
+        }
+
+        .container {
+            text-align: center;
+        }
+
+        .mensagem-especial {
+            background: rgba(255, 255, 255, 0.95);
+            border-radius: 35px;
+            padding: 40px 25px;
+            margin: 30px 0;
+            box-shadow: 0 15px 35px rgba(0,0,0,0.2);
+            font-size: 1.3rem;
+            line-height: 1.6;
+            color: #2c3e50;
+            font-weight: 500;
+            position: relative;
+            min-height: 280px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+        }
+
+        .mensagem-especial::before {
+            content: "💕";
+            position: absolute;
+            font-size: 50px;
+            opacity: 0.1;
+            bottom: -15px;
+            right: -15px;
+            transform: rotate(-10deg);
+        }
+
+        .mensagem-especial::after {
+            content: "💗";
+            position: absolute;
+            font-size: 50px;
+            opacity: 0.1;
+            top: -20px;
+            left: -20px;
+            transform: rotate(15deg);
+        }
+
+        .data-info {
+            color: rgba(255,255,255,0.9);
+            font-size: 0.9rem;
+            margin-bottom: 10px;
+        }
+
+        .contador-troca {
+            background: rgba(0,0,0,0.3);
+            display: inline-block;
+            padding: 5px 15px;
+            border-radius: 50px;
+            font-size: 0.8rem;
+            margin: 10px 0;
+            color: white;
+        }
+
+        .botao-trocar {
+            background: #ffd966;
+            color: #2c3e50;
+            margin: 10px;
+        }
+
+        .botao-trocar:disabled {
+            background: #ccc;
+            color: #666;
+            cursor: not-allowed;
+            opacity: 0.6;
+        }
+
+        .grupo-botoes {
+            display: flex;
+            justify-content: center;
+            gap: 15px;
+            flex-wrap: wrap;
+            margin: 20px 0;
+        }
+
+        footer {
+            margin-top: 30px;
+            color: rgba(255,255,240,0.7);
+            font-size: 0.8rem;
+        }
+
+        @media (max-width: 480px) {
+            .mensagem-especial {
+                font-size: 1.1rem;
+                padding: 30px 20px;
+                min-height: 320px;
+            }
+        }
+    </style>
+</head>
+<body>
+
+<div class="container fade-in">
+    <h1>✨ Mensagem do Dia ✨</h1>
+    <div class="data-info" id="dataInfo"></div>
+    <div class="contador-troca" id="contadorTroca">📅 Mensagem fixa do dia</div>
+
+    <div class="mensagem-especial" id="mensagemContainer">
+        💌 Carregando mensagem especial... 💌
+    </div>
+
+    <div class="grupo-botoes">
+        <a href="index.html" class="btn btn-voltar">← Voltar para o início</a>
+        <button class="btn botao-trocar" id="btnTrocar">🔄 Trocar mensagem (1 vez por dia)</button>
+    </div>
+
+    <footer>💌 Uma mensagem especial por dia. Você pode trocar uma única vez se quiser.</footer>
+</div>
+
+<script>
+    // ============================================================
+    // 1. GRADIENTE DINÂMICO (DIA/NOITE)
+    // ============================================================
+    function atualizarGradientePorHorario() {
+        const agora = new Date();
+        const hora = agora.getHours();
+        let gradiente;
+
+        if (hora >= 6 && hora < 18) {
+            gradiente = "linear-gradient(135deg, #f9d423 0%, #ff4e50 100%)";
+        } else {
+            gradiente = "linear-gradient(135deg, #2b1b4e 0%, #1a2a6c 100%)";
+        }
+        document.body.style.background = gradiente;
+    }
+
+    // ============================================================
+    // 2. LISTA DAS 20 MENSAGENS
+    // ============================================================
+    const mensagens = [
+        "serhumaninho, você é pequena no tamanho, mas gigante na coragem. Eu olho pras suas fotos e penso: 'meu deus, como uma pessoa tão fofa treina luta?'. Você me encanta. 💜",
+        "Seus olhos grandes merecem ser chamados de constelação particular. Um dia quero olhar fundo neles e descobrir todas as estrelas que você esconde. 🌟",
+        "Você já passou por tanta coisa e continua de pé, forte, madura, corajosa. Isso não é sorte — é você sendo foda. E eu admiro cada parte disso. OMDS. 🥹",
+        "Sabe o que eu acho? Que seus cachos são poesia que o vento resolveu bagunçar de propósito, só pra ficar mais bonito. 💫",
+        "Você é do tipo que faz o dia ficar mais leve sem nem perceber. Sua pele clarinha brilha, seu sorriso é um abrigo… serhumaninho, você é meu lugar favorito (mesmo sem nunca ter ido). ✨",
+        "Meu Deus, como pode uma pessoa ser tão bonita e tão fofa ao mesmo tempo? Parece até injusto com o resto do mundo. OMDS, sério. 🌸",
+        "Um dia desses eu vou olhar pra você e dizer: 'seus lábios são o desejo que ainda vou realizar'. Mas por enquanto, fica esse texto guardado com carinho. 💭",
+        "Ela é baixinha, mas a presença dela preenche o ambiente inteiro. Ela treina luta, mas tem um coração que cabe o mundo. Ela é madura, mas me faz querer ser criança com ela. Ela é você. 🌙",
+        "Sabe aquele tipo de pessoa que você olha e pensa 'queria saber desenhar só pra tentar registrar'? Então. É você, serhumaninho. 🎨",
+        "Seu corpo é bonito, sim. Mas o que me mata mesmo é sua alma corajosa, seus olhos de quem já viu tanta coisa e ainda consegue enxergar beleza. OMDS. 💖",
+        "Você é a prova de que Deus gosta de caprichar nos detalhes: cabelo cacheado, pele clarinha, jeitinho fofo, mas com uma força de leoa. Meu Deus. 🦁",
+        "Eu nem te toquei ainda, mas já imagino o abraço mais quente do mundo. E tá tudo bem esperar. Só de saber que você existe, meu dia já melhora. ☁️",
+        "serhumaninho, se fofura fosse luta, você seria campeã mundial. Se coragem fosse prêmio, você teria todos. Se beleza fosse crime… bom, aí você tava presa, amor. 😂💕",
+        "Tem dias que eu tô triste, aí lembro que você existe — forte, linda, cheia de história — e parece que o mundo fica menos pesado. Obrigado por ser você. 🌷",
+        "Um dia vou te falar isso pessoalmente: 'seus olhos são a parte mais bonita do amanhecer'. E você vai rir de nervoso, falar 'meu deus', e eu vou achar a coisa mais fofa do mundo. 🌅",
+        "Sua pele clarinha no escuro? Deve brilhar. Seus cachos no vento? Devem dançar. Você andando na rua? Deve parar o trânsito. OMDS, que isso, serhumaninho. 🔥",
+        "Você treina luta, mas comigo pode baixar a guarda. Eu só quero te proteger, te admirar, e quem sabe um dia… te beijar. (Esse beijo ainda é só um desejo, mas tá guardado com muito cuidado). 🥺",
+        "Madura, corajosa, fofa e linda. Parece personagem de livro que a gente se apaixona. Só que você é real. E isso me assusta (de um jeito bom). 📖💘",
+        "Se existisse um ranking de pessoas incríveis, você tava no topo. E o segundo lugar viria chorando. OMDS, serhumaninho, você é sensacional. 🏆",
+        "Eu não sei o que o futuro guarda, mas sei que quero você nele. Com seus cachos, seus olhos, sua força, sua fofura e esse jeitinho único de existir. Meu Deus, como eu gosto de você. 🌌"
+    ];
+
+    // Chaves do localStorage
+    const STORAGE_KEY_TROCA = 'msg_dia_trocou_hoje';
+    const STORAGE_KEY_MENSAGEM_TROCADA = 'msg_dia_mensagem_trocada';
+    const STORAGE_KEY_DATA_TROCA = 'msg_dia_data_troca';
+
+    // ============================================================
+    // 3. FUNÇÕES DE DATA (verificar se é outro dia)
+    // ============================================================
+    function obterDataString() {
+        const hoje = new Date();
+        return `${hoje.getFullYear()}-${hoje.getMonth()}-${hoje.getDate()}`;
+    }
+
+    function podeTrocarHoje() {
+        const dataSalva = localStorage.getItem(STORAGE_KEY_DATA_TROCA);
+        const hoje = obterDataString();
+        // Se não tem data salva OU a data salva é diferente de hoje, pode trocar
+        return dataSalva !== hoje;
+    }
+
+    function marcarTrocaRealizada() {
+        localStorage.setItem(STORAGE_KEY_DATA_TROCA, obterDataString());
+        localStorage.setItem(STORAGE_KEY_TROCA, 'true');
+    }
+
+    // ============================================================
+    // 4. MENSAGEM DO DIA (com possibilidade de troca)
+    // ============================================================
+    function obterIndiceDoDia() {
+        const hoje = new Date();
+        const dataReferencia = new Date(2024, 0, 1);
+        const diffDias = Math.floor((hoje - dataReferencia) / (1000 * 60 * 60 * 24));
+        return diffDias % mensagens.length;
+    }
+
+    // Carregar a mensagem atual (se trocou, carrega a trocada)
+    function carregarMensagem() {
+        const trocaValida = !podeTrocarHoje(); // se NÃO pode trocar, significa que já trocou hoje
+        const mensagemTrocada = localStorage.getItem(STORAGE_KEY_MENSAGEM_TROCADA);
+
+        if (trocaValida && mensagemTrocada) {
+            // Mostra a mensagem que ela trocou
+            document.getElementById('mensagemContainer').innerHTML = `💌 ${mensagemTrocada} 💌`;
+            document.getElementById('contadorTroca').innerHTML = '⚠️ Você já trocou a mensagem hoje. Volte amanhã para trocar novamente.';
+            document.getElementById('btnTrocar').disabled = true;
+        } else {
+            // Mostra a mensagem original do dia
+            const indiceOriginal = obterIndiceDoDia();
+            const mensagemOriginal = mensagens[indiceOriginal];
+            document.getElementById('mensagemContainer').innerHTML = `💌 ${mensagemOriginal} 💌`;
+            document.getElementById('contadorTroca').innerHTML = '✨ Você pode trocar a mensagem UMA vez hoje ✨';
+            document.getElementById('btnTrocar').disabled = false;
+        }
+    }
+
+    // Função para trocar a mensagem (só funciona se ainda pode trocar hoje)
+    function trocarMensagem() {
+        if (!podeTrocarHoje()) {
+            alert("💝 Você já usou sua troca hoje! Volte amanhã para uma nova mensagem ou uma nova troca.");
+            return;
+        }
+
+        const indiceAtual = obterIndiceDoDia();
+        let novoIndice;
+        do {
+            novoIndice = Math.floor(Math.random() * mensagens.length);
+        } while (novoIndice === indiceAtual && mensagens.length > 1);
+
+        const novaMensagem = mensagens[novoIndice];
+        
+        // Salva a troca
+        localStorage.setItem(STORAGE_KEY_MENSAGEM_TROCADA, novaMensagem);
+        marcarTrocaRealizada();
+        
+        // Atualiza a tela
+        document.getElementById('mensagemContainer').innerHTML = `💌 ${novaMensagem} 💌`;
+        document.getElementById('contadorTroca').innerHTML = '✅ Troca realizada! Só pode trocar de novo amanhã. ✅';
+        document.getElementById('btnTrocar').disabled = true;
+        
+        // Feedback visual
+        alert("✨ Mensagem trocada! Amanhã você pode trocar de novo se quiser. ✨");
+    }
+
+    // Mostrar data atual
+    function mostrarDataAtual() {
+        const hoje = new Date();
+        const opcoes = { weekday: 'long', year: 'numeric', month: 'long', day: 'numeric' };
+        const dataFormatada = hoje.toLocaleDateString('pt-BR', opcoes);
+        document.getElementById('dataInfo').innerHTML = `📅 ${dataFormatada}`;
+    }
+
+    // ============================================================
+    // 5. INICIALIZAR
+    // ============================================================
+    function inicializar() {
+        atualizarGradientePorHorario();
+        mostrarDataAtual();
+        carregarMensagem();
+
+        // Botão trocar mensagem
+        document.getElementById('btnTrocar').addEventListener('click', trocarMensagem);
+
+        // Verifica gradiente a cada minuto
+        setInterval(atualizarGradientePorHorario, 60000);
+    }
+
+    inicializar();
+</script>
+</body>
+</html>

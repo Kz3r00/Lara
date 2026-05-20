@@ -1,0 +1,364 @@
+<!DOCTYPE html>
+<html lang="pt-br">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0, user-scalable=yes">
+    <title>Lugar Seguro - Nossas Histórias</title>
+    <link rel="stylesheet" href="estilo-global.css">
+    <style>
+        body {
+            background: linear-gradient(135deg, #1a1a2e 0%, #16213e 50%, #0f3460 100%);
+            min-height: 100vh;
+            font-family: 'Segoe UI', 'Helvetica Neue', system-ui, sans-serif;
+            padding: 20px;
+        }
+
+        .container {
+            max-width: 750px;
+            margin: 0 auto;
+            background: rgba(255, 255, 255, 0.95);
+            border-radius: 40px;
+            padding: 30px 25px;
+            box-shadow: 0 25px 50px rgba(0,0,0,0.3);
+        }
+
+        h1 {
+            text-align: center;
+            color: #c0392b;
+            font-size: 2rem;
+            margin-bottom: 5px;
+        }
+
+        .subtitulo {
+            text-align: center;
+            color: #2c3e50;
+            margin-bottom: 25px;
+            font-size: 0.9rem;
+        }
+
+        /* Gêneros */
+        .generos {
+            display: flex;
+            gap: 15px;
+            justify-content: center;
+            margin-bottom: 30px;
+            flex-wrap: wrap;
+        }
+
+        .btn-genero {
+            background: #ecf0f1;
+            border: none;
+            padding: 12px 25px;
+            border-radius: 50px;
+            font-size: 1rem;
+            font-weight: bold;
+            cursor: pointer;
+            transition: 0.2s;
+            color: #2c3e50;
+        }
+
+        .btn-genero.ativo {
+            background: #c0392b;
+            color: white;
+            box-shadow: 0 4px 12px rgba(192,57,43,0.3);
+        }
+
+        .btn-genero:active {
+            transform: scale(0.95);
+        }
+
+        /* Card da história */
+        .historia-card {
+            background: #fffaf5;
+            border-radius: 30px;
+            padding: 25px;
+            margin: 20px 0;
+            border-left: 8px solid #c0392b;
+            box-shadow: 0 8px 20px rgba(0,0,0,0.05);
+        }
+
+        .historia-titulo {
+            font-size: 1.5rem;
+            font-weight: bold;
+            color: #c0392b;
+            margin-bottom: 8px;
+        }
+
+        .historia-genero {
+            display: inline-block;
+            background: #f0e0d0;
+            padding: 4px 15px;
+            border-radius: 30px;
+            font-size: 0.8rem;
+            margin-bottom: 20px;
+            color: #7d3c00;
+        }
+
+        .historia-texto {
+            font-size: 1rem;
+            line-height: 1.6;
+            color: #2c3e50;
+            white-space: pre-wrap;
+            font-family: 'Georgia', serif;
+        }
+
+        /* Botões de ação */
+        .botoes-acao {
+            display: flex;
+            gap: 15px;
+            justify-content: center;
+            margin-top: 20px;
+            flex-wrap: wrap;
+        }
+
+        .btn-acao {
+            padding: 12px 24px;
+            border: none;
+            border-radius: 50px;
+            font-weight: bold;
+            cursor: pointer;
+            transition: 0.2s;
+            font-size: 0.9rem;
+        }
+
+        .btn-gerar {
+            background: #c0392b;
+            color: white;
+        }
+
+        .btn-baixar {
+            background: #2c3e50;
+            color: white;
+        }
+
+        .btn-acao:active {
+            transform: scale(0.95);
+        }
+
+        .btn-voltar {
+            display: inline-block;
+            background: #95a5a6;
+            color: white;
+            text-decoration: none;
+            padding: 12px 28px;
+            border-radius: 50px;
+            margin-top: 25px;
+            text-align: center;
+        }
+
+        footer {
+            text-align: center;
+            margin-top: 25px;
+            font-size: 0.7rem;
+            color: #7f8c8d;
+        }
+
+        @media (max-width: 480px) {
+            .historia-titulo {
+                font-size: 1.2rem;
+            }
+            .historia-texto {
+                font-size: 0.9rem;
+            }
+        }
+    </style>
+</head>
+<body>
+
+<div class="container">
+    <h1>📖 Nossas Histórias</h1>
+    <div class="subtitulo">✨ Lara & Kayky — em aventuras do coração ✨</div>
+
+    <div class="generos">
+        <button class="btn-genero ativo" data-genero="romance">💕 Romance</button>
+        <button class="btn-genero" data-genero="comedia">😂 Comédia</button>
+        <button class="btn-genero" data-genero="fantasia">🐉 Fantasia</button>
+    </div>
+
+    <div class="historia-card" id="historiaCard">
+        <div class="historia-titulo" id="historiaTitulo">Carregando...</div>
+        <div class="historia-genero" id="historiaGenero"></div>
+        <div class="historia-texto" id="historiaTexto"></div>
+    </div>
+
+    <div class="botoes-acao">
+        <button class="btn-acao btn-gerar" id="btnGerar">✨ Gerar nova história</button>
+        <button class="btn-acao btn-baixar" id="btnBaixar">📥 Baixar como texto</button>
+    </div>
+
+    <a href="index.html" class="btn-voltar">← Voltar para o início</a>
+    <footer>💕 Cada história tem Lara e Kayky. Você pode baixar e guardar as que mais gostar.</footer>
+</div>
+
+<script>
+    // ============================================================
+    // BANCO DE HISTÓRIAS (gerador de combinações)
+    // Cada gênero tem várias "partes" que se combinam aleatoriamente
+    // ============================================================
+
+    // ROMANCE
+    const romance = {
+        titulos: [
+            "O Primeiro Beijo",
+            "Encontros do Destino",
+            "Amor em Cada Detalhe",
+            "O Acaso do Coração",
+            "Perto Demais"
+        ],
+        cenarios: [
+            "Numa tarde chuvosa, Lara entrou no café mais próximo para se abrigar. Kayky estava no balcão, com um livro na mão e um sorriso tímido.",
+            "Depois de meses se falando online, Lara e Kayky marcaram de se encontrar no parque. A ansiedade era tanta que ambos chegaram uma hora mais cedo.",
+            "Eles estudavam na mesma faculdade, mas nunca tinham trocado uma palavra. Até que um projeto em grupo os aproximou.",
+            "Lara odiavia viajar de avião. Kayky, o desconhecido ao seu lado, percebeu seu nervosismo e ofereceu a mão para ela segurar durante a turbulência."
+        ],
+        conflitos: [
+            "Kayky estava prestes a se mudar de cidade. Lara precisava decidir se arriscava tudo por ele.",
+            "Amigos em comum tentavam juntá-los, mas os dois eram teimosos demais para admitir que gostavam um do outro.",
+            "Kayky tinha dificuldade de expressar sentimentos, mas Lara enxergava além das palavras."
+        ],
+        finais: [
+            "No fim, Kayky segurou as mãos dela e disse: 'Eu não quero mais um dia sem você por perto.' Lara sorriu e respondeu: 'Então fica.'",
+            "Sem dizer uma palavra, Lara se aproximou e o abraçou. Foi o suficiente para Kayky entender que ela também sentia o mesmo.",
+            "O destino os uniu de novo, meses depois, num lugar completamente inesperado. Dessa vez, nenhum dos dois deixou o outro escapar."
+        ]
+    };
+
+    // COMÉDIA
+    const comedia = {
+        titulos: [
+            "O Encontro Desastroso",
+            "Amor é... Bagunça",
+            "O Date que Deu Tudo Errado",
+            "Pior que Novela",
+            "Casal Trapalhão"
+        ],
+        cenarios: [
+            "Kayky tentou cozinhar para impressionar Lara. O resultado? A fumaça fez o prédio inteiro evacuar.",
+            "Lara escorregou numa casca de banana (sim, bem clichê) e caiu diretamente nos braços de Kayky... que também caiu junto.",
+            "Eles combinaram de assistir um filme de terror, mas Kayky ficou tão assustado que derrubou a pipoca inteira na cabeça de Lara."
+        ],
+        conflitos: [
+            "Os dois tentavam parecer descolados um para o outro, mas só faziam cada besteira pior que a anterior.",
+            "Um gato atrapalhou todas as tentativas de romance do casal. O bichinho era o verdadeiro vilão da história."
+        ],
+        finais: [
+            "Entre risadas e vergonhas, Lara olhou para Kayky e disse: 'Com você, até os piores dias são engraçados.'",
+            "Kayky, com uma mancha de tinta na cara, falou: 'Eu não sei cozinhar, não sei dançar, mas sei que quero você por perto pra sempre.'"
+        ]
+    };
+
+    // FANTASIA
+    const fantasia = {
+        titulos: [
+            "O Beijo da Lua",
+            "A Última Feiticeira",
+            "Dragões e Encantos",
+            "O Reino Perdido",
+            "Amor entre Mundos"
+        ],
+        cenarios: [
+            "Lara descobriu que era a última herdeira de um reino mágico. Kayky, um guardião enviado para protegê-la, não esperava se apaixonar.",
+            "Numa floresta encantada, Lara encontrou uma criatura ferida. Ela cuidou dela por dias, sem saber que era Kayky, um príncipe amaldiçoado a vagar como lobo.",
+            "Um portal mágico se abriu no quarto de Lara. Do outro lado, Kayky, um cavaleiro de outro mundo, a convidou para uma aventura perigosa."
+        ],
+        conflitos: [
+            "A magia que unia os dois mundos estava se desfazendo. Lara precisava escolher: seu reino ou seu coração.",
+            "Uma bruxa invejosa lançou uma maldição: se Kayky a beijasse, ele seria aprisionado para sempre. Mas o amor deles era mais forte que qualquer feitiço."
+        ],
+        finais: [
+            "Kayky entregou sua espada e disse: 'Eu jurei proteger o reino, mas meu maior tesouro é você.'",
+            "Lara usou seus poderes nunca antes testados para salvar Kayky. O beijo que veio depois fez as estrelas brilharem mais forte."
+        ]
+    };
+
+    // ============================================================
+    // FUNÇÕES
+    // ============================================================
+    let generoAtual = "romance";
+
+    function sortearElemento(arr) {
+        return arr[Math.floor(Math.random() * arr.length)];
+    }
+
+    function gerarHistoria(genero) {
+        let banco;
+        if (genero === "romance") banco = romance;
+        else if (genero === "comedia") banco = comedia;
+        else banco = fantasia;
+
+        const titulo = sortearElemento(banco.titulos);
+        const cenario = sortearElemento(banco.cenarios);
+        const conflito = sortearElemento(banco.conflitos);
+        const final = sortearElemento(banco.finais);
+
+        // Nomes Lara e Kayky já estão nos textos, mas garantimos substituição
+        let texto = `${cenario}\n\n${conflito}\n\n${final}`;
+        
+        // Garantir que os nomes estejam corretos (alguns textos podem ter variações)
+        texto = texto.replace(/ela /g, "Lara ");
+        texto = texto.replace(/ele /g, "Kayky ");
+        
+        return { titulo, texto };
+    }
+
+    function atualizarTela() {
+        const historia = gerarHistoria(generoAtual);
+        
+        document.getElementById('historiaTitulo').innerText = historia.titulo;
+        document.getElementById('historiaGenero').innerHTML = getIconeGenero() + " " + getNomeGenero();
+        document.getElementById('historiaTexto').innerText = historia.texto;
+        
+        // Salvar a história atual para download
+        window.historiaAtual = historia;
+    }
+
+    function getIconeGenero() {
+        if (generoAtual === "romance") return "💕";
+        if (generoAtual === "comedia") return "😂";
+        return "🐉";
+    }
+
+    function getNomeGenero() {
+        if (generoAtual === "romance") return "Romance";
+        if (generoAtual === "comedia") return "Comédia";
+        return "Fantasia";
+    }
+
+    function baixarHistoria() {
+        if (!window.historiaAtual) return;
+        
+        const historia = window.historiaAtual;
+        const conteudo = `📖 ${historia.titulo}\n🎭 Gênero: ${getNomeGenero()}\n👫 Lara & Kayky\n\n${historia.texto}\n\n---\n✨ Gerado pelo Lugar Seguro ✨`;
+        
+        const blob = new Blob([conteudo], { type: 'text/plain;charset=utf-8' });
+        const link = document.createElement('a');
+        const url = URL.createObjectURL(blob);
+        link.href = url;
+        link.download = `historia_${generoAtual}_${Date.now()}.txt`;
+        document.body.appendChild(link);
+        link.click();
+        document.body.removeChild(link);
+        URL.revokeObjectURL(url);
+    }
+
+    // Eventos
+    document.querySelectorAll('.btn-genero').forEach(btn => {
+        btn.addEventListener('click', () => {
+            document.querySelectorAll('.btn-genero').forEach(b => b.classList.remove('ativo'));
+            btn.classList.add('ativo');
+            generoAtual = btn.getAttribute('data-genero');
+            atualizarTela();
+        });
+    });
+
+    document.getElementById('btnGerar').addEventListener('click', () => {
+        atualizarTela();
+    });
+
+    document.getElementById('btnBaixar').addEventListener('click', baixarHistoria);
+
+    // Inicializar
+    atualizarTela();
+</script>
+</body>
+</html>

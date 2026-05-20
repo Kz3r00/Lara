@@ -1,0 +1,500 @@
+<!DOCTYPE html>
+<html lang="pt-br">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0, user-scalable=yes">
+    <title>Lugar Seguro - Missão do Dia</title>
+    <link rel="stylesheet" href="estilo-global.css">
+    <style>
+        body {
+            background: linear-gradient(135deg, #f9d423 0%, #ff4e50 100%);
+            min-height: 100vh;
+            font-family: 'Segoe UI', 'Helvetica Neue', system-ui, sans-serif;
+            padding: 20px;
+        }
+
+        .container {
+            max-width: 650px;
+            margin: 0 auto;
+            background: rgba(255, 255, 255, 0.95);
+            border-radius: 50px;
+            padding: 30px 25px;
+            box-shadow: 0 25px 50px rgba(0,0,0,0.2);
+            text-align: center;
+        }
+
+        h1 {
+            color: #c0392b;
+            font-size: 2rem;
+            margin-bottom: 5px;
+        }
+
+        .subtitulo {
+            color: #e67e22;
+            margin-bottom: 25px;
+            font-size: 0.9rem;
+        }
+
+        .data-info {
+            background: #ffecd6;
+            display: inline-block;
+            padding: 8px 20px;
+            border-radius: 50px;
+            margin-bottom: 25px;
+            font-weight: bold;
+            color: #e67e22;
+        }
+
+        .missao-card {
+            background: #fff7ed;
+            border-radius: 35px;
+            padding: 25px;
+            margin-bottom: 20px;
+            border-left: 8px solid #f39c12;
+            box-shadow: 0 8px 20px rgba(0,0,0,0.08);
+        }
+
+        .tipo-badge {
+            display: inline-block;
+            padding: 5px 15px;
+            border-radius: 30px;
+            font-size: 0.7rem;
+            font-weight: bold;
+            margin-bottom: 12px;
+        }
+
+        .tipo-fisico {
+            background: #2ecc71;
+            color: white;
+        }
+
+        .tipo-mental {
+            background: #f39c12;
+            color: white;
+        }
+
+        .missao-texto {
+            font-size: 1.3rem;
+            font-weight: bold;
+            color: #2c3e50;
+            line-height: 1.4;
+            margin: 15px 0;
+        }
+
+        .botoes-missao {
+            display: flex;
+            gap: 12px;
+            justify-content: center;
+            margin-top: 20px;
+            flex-wrap: wrap;
+        }
+
+        .btn-missao {
+            padding: 10px 20px;
+            border: none;
+            border-radius: 40px;
+            font-weight: bold;
+            cursor: pointer;
+            transition: 0.2s;
+            font-size: 0.85rem;
+        }
+
+        .btn-concluir {
+            background: #27ae60;
+            color: white;
+        }
+
+        .btn-pular {
+            background: #e67e22;
+            color: white;
+        }
+
+        .btn-missao:active {
+            transform: scale(0.95);
+        }
+
+        .mensagem-elogio {
+            background: #fef9e7;
+            border-radius: 25px;
+            padding: 18px;
+            margin-top: 20px;
+            border: 1px solid #f1c40f;
+            color: #7d3c00;
+            font-size: 0.95rem;
+            line-height: 1.5;
+            animation: fadeIn 0.3s ease;
+        }
+
+        @keyframes fadeIn {
+            from { opacity: 0; transform: translateY(10px);}
+            to { opacity: 1; transform: translateY(0);}
+        }
+
+        .btn-voltar {
+            display: inline-block;
+            background: #95a5a6;
+            color: white;
+            text-decoration: none;
+            padding: 12px 28px;
+            border-radius: 50px;
+            margin-top: 25px;
+        }
+
+        footer {
+            margin-top: 20px;
+            font-size: 0.7rem;
+            color: #f39c12;
+        }
+
+        @media (max-width: 480px) {
+            .missao-texto {
+                font-size: 1rem;
+            }
+            .container {
+                padding: 20px 15px;
+            }
+        }
+    </style>
+</head>
+<body>
+
+<div class="container">
+    <h1>🎯 Missão do Dia</h1>
+    <div class="subtitulo">✨ Pequenos gestos que transformam o dia ✨</div>
+
+    <div class="data-info" id="dataInfo"></div>
+
+    <div id="missoesContainer"></div>
+
+    <a href="index.html" class="btn-voltar">← Voltar para o início</a>
+    <footer>💪 Missões se repetem todo mês para criar hábitos saudáveis</footer>
+</div>
+
+<script>
+    // ============================================================
+    // 1. LISTA DE MISSÕES PRÉ-DEFINIDAS (31 dias × 2 = 62 missões)
+    // Tipo A (físico) + Tipo B (saúde mental/divertida)
+    // Você pode editar qualquer missão livremente!
+    // ============================================================
+    
+    const missoes = [
+        // Dia 1
+        { tipo: "fisico", texto: "💧 Beba um copo de água agora mesmo" },
+        { tipo: "mental", texto: "😄 Conte uma piada para alguém (ou para si mesma)" },
+        
+        // Dia 2
+        { tipo: "fisico", texto: "😴 Durma por pelo menos 15 minutos (cochilo reparador)" },
+        { tipo: "mental", texto: "📺 Assista a um episódio de um desenho que você gosta" },
+        
+        // Dia 3
+        { tipo: "fisico", texto: "🌬️ Respire: puxe por 4 segundos, segure por 4, solte por 6. Repita 5 vezes" },
+        { tipo: "mental", texto: "💭 Lembre-se das pessoas que gostam de você" },
+        
+        // Dia 4
+        { tipo: "fisico", texto: "🚶 Dê uma volta de 5 minutos pela casa ou quintal" },
+        { tipo: "mental", texto: "🪞 Se admire por alguns segundos no espelho" },
+        
+        // Dia 5
+        { tipo: "fisico", texto: "🍎 Coma uma fruta ou algo nutritivo" },
+        { tipo: "mental", texto: "📝 Escreva uma coisa boa que aconteceu hoje" },
+        
+        // Dia 6
+        { tipo: "fisico", texto: "💪 Alongue o pescoço e os ombros por 2 minutos" },
+        { tipo: "mental", texto: "🎵 Escute uma música que te faz feliz" },
+        
+        // Dia 7
+        { tipo: "fisico", texto: "👐 Massageie suas mãos por 1 minuto" },
+        { tipo: "mental", texto: "📖 Leia uma página de um livro (qualquer um)" },
+        
+        // Dia 8
+        { tipo: "fisico", texto: "🧘 Fique em silêncio por 2 minutos (sem celular)" },
+        { tipo: "mental", texto: "💌 Mande uma mensagem carinhosa para alguém" },
+        
+        // Dia 9
+        { tipo: "fisico", texto: "🦷 Escove os dentes com calma, sentindo o frescor" },
+        { tipo: "mental", texto: "🌟 Pense em 3 coisas pelas quais você é grata" },
+        
+        // Dia 10
+        { tipo: "fisico", texto: "👀 Pisque devagar 10 vezes (descanso para os olhos)" },
+        { tipo: "mental", texto: "😂 Assista a um vídeo engraçado no YouTube" },
+        
+        // Dia 11
+        { tipo: "fisico", texto: "🫂 Abrace alguém (ou um travesseiro)" },
+        { tipo: "mental", texto: "✨ Diga em voz alta: 'Eu sou suficiente'" },
+        
+        // Dia 12
+        { tipo: "fisico", texto: "🍵 Beba um chá ou água morna" },
+        { tipo: "mental", texto: "🎨 Desenhe algo simples (um coração, uma flor)" },
+        
+        // Dia 13
+        { tipo: "fisico", texto: "🚿 Tome um banho prestando atenção nas sensações" },
+        { tipo: "mental", texto: "📸 Tire uma foto de algo bonito perto de você" },
+        
+        // Dia 14
+        { tipo: "fisico", texto: "🧴 Passe hidratante nas mãos ou rosto" },
+        { tipo: "mental", texto: "🎭 Faça uma careta na frente do espelho e ria" },
+        
+        // Dia 15
+        { tipo: "fisico", texto: "💤 Boceje livremente 3 vezes (relaxa o corpo)" },
+        { tipo: "mental", texto: "📝 Escreva um elogio para si mesma" },
+        
+        // Dia 16
+        { tipo: "fisico", texto: "🍪 Coma algo que você gosta devagar, saboreando" },
+        { tipo: "mental", texto: "🎬 Assista a uma cena de um filme que você ama" },
+        
+        // Dia 17
+        { tipo: "fisico", texto: "👐 Abra e feche as mãos 20 vezes (circulação)" },
+        { tipo: "mental", texto: "💭 Imagine um lugar que te traz paz" },
+        
+        // Dia 18
+        { tipo: "fisico", texto: "🧠 Massageie suas têmporas por 1 minuto" },
+        { tipo: "mental", texto: "🎤 Cante um trecho de uma música (pode ser baixinho)" },
+        
+        // Dia 19
+        { tipo: "fisico", texto: "🦵 Levante e mexa as pernas por 2 minutos" },
+        { tipo: "mental", texto: "📞 Ligue ou mande áudio para alguém que você gosta" },
+        
+        // Dia 20
+        { tipo: "fisico", texto: "🌞 Abra a janela e respire ar fresco por 1 minuto" },
+        { tipo: "mental", texto: "🧩 Faça um palavras-cruzadas ou jogo de memória" },
+        
+        // Dia 21
+        { tipo: "fisico", texto: "💧 Tome mais um copo de água (você merece)" },
+        { tipo: "mental", texto: "📖 Leia uma frase inspiradora e guarde com você" },
+        
+        // Dia 22
+        { tipo: "fisico", texto: "🧘‍♂️ Fique em pé com os olhos fechados por 30 segundos" },
+        { tipo: "mental", texto: "🎁 Faça algo legal por alguém sem esperar nada" },
+        
+        // Dia 23
+        { tipo: "fisico", texto: "🍌 Coma uma banana ou algo com potássio" },
+        { tipo: "mental", texto: "✍️ Escreva uma meta pequena para hoje" },
+        
+        // Dia 24
+        { tipo: "fisico", texto: "😌 Sorria por 10 segundos (mesmo que forçado, libera endorfina)" },
+        { tipo: "mental", texto: "🎧 Escute um podcast curto ou áudio inspirador" },
+        
+        // Dia 25
+        { tipo: "fisico", texto: "🛌 Deite e relaxe os músculos por 3 minutos" },
+        { tipo: "mental", texto: "🖼️ Olhe uma foto antiga que te traz boas lembranças" },
+        
+        // Dia 26
+        { tipo: "fisico", texto: "👁️ Pisque devagar e olhe para longe por 1 minuto" },
+        { tipo: "mental", texto: "💬 Conte para alguém algo que você aprendeu" },
+        
+        // Dia 27
+        { tipo: "fisico", texto: "🍎 Coma algo crocante (maçã, cenoura)" },
+        { tipo: "mental", texto: "🧘‍♀️ Faça 3 respirações profundas agora" },
+        
+        // Dia 28
+        { tipo: "fisico", texto: "🧥 Vista uma roupa confortável só para você" },
+        { tipo: "mental", texto: "🌟 Lembre-se de uma vez que você foi corajosa" },
+        
+        // Dia 29
+        { tipo: "fisico", texto: "💪 Estique os braços para cima e alongue" },
+        { tipo: "mental", texto: "📝 Anote algo que você quer aprender" },
+        
+        // Dia 30
+        { tipo: "fisico", texto: "🦶 Mexa os pés e tornozelos por 1 minuto" },
+        { tipo: "mental", texto: "🎭 Faça uma voz engraçada e fale com si mesma" },
+        
+        // Dia 31
+        { tipo: "fisico", texto: "💧 Beba água e comemore o mês cuidando de você" },
+        { tipo: "mental", texto: "🎉 Comemore uma pequena conquista sua" }
+    ];
+
+    // ============================================================
+    // 2. MENSAGENS DE ELOGIO (10 diferentes)
+    // ============================================================
+    const mensagensElogio = [
+        "💖 Você é incrível por se cuidar! Eu admiro sua força.",
+        "🌟 Cada pequeno gesto importa. Você está brilhando!",
+        "💪 Uhuu! Mais uma missão cumprida. Você é poderosa!",
+        "🌸 Cuidar de você é o melhor presente. Parabéns!",
+        "✨ Você merece todo carinho do mundo. Lindo gesto!",
+        "💕 Seu coração é gigante. Continue assim!",
+        "🌞 Hoje você já fez algo lindo por si mesma. Que orgulho!",
+        "🎯 Missão concluída! Você está evoluindo todo dia.",
+        "💗 Eu torço muito por você. Você é especial!",
+        "🌙 Pequenos hábitos transformam vidas. Você está no caminho certo!"
+    ];
+
+    // ============================================================
+    // 3. FUNÇÕES DO SISTEMA
+    // ============================================================
+    
+    // Obter o dia do mês atual (1 a 31)
+    function obterDiaDoMes() {
+        const agora = new Date();
+        return agora.getDate(); // 1 a 31
+    }
+
+    // Obter missão baseada no índice (considera que tem 2 missões por dia)
+    function obterMissoesDoDia(dia) {
+        // dias vão de 1 a 31, cada dia tem 2 missões: índice (dia-1)*2 e (dia-1)*2+1
+        const indiceBase = (dia - 1) * 2;
+        if (indiceBase + 1 >= missoes.length) {
+            // Caso segurança (se for dia 32+)
+            return {
+                fisico: { texto: "💧 Beba água e cuide de você", tipo: "fisico" },
+                mental: { texto: "😊 Respire fundo e sorria", tipo: "mental" }
+            };
+        }
+        return {
+            fisico: missoes[indiceBase],
+            mental: missoes[indiceBase + 1]
+        };
+    }
+
+    // Sortear uma missão aleatória (do mesmo tipo, de outro dia)
+    function sortearMissaoAleatoria(tipo) {
+        const missoesDoTipo = missoes.filter(m => m.tipo === tipo);
+        const aleatorio = Math.floor(Math.random() * missoesDoTipo.length);
+        return missoesDoTipo[aleatorio];
+    }
+
+    // Estado atual das missões (pode ser alterado pelo "pular")
+    let missaoAtualFisico = null;
+    let missaoAtualMental = null;
+    let diaAtual = null;
+
+    // Mostrar data formatada
+    function mostrarData() {
+        const agora = new Date();
+        const opcoes = { weekday: 'long', year: 'numeric', month: 'long', day: 'numeric' };
+        const dataFormatada = agora.toLocaleDateString('pt-BR', opcoes);
+        document.getElementById('dataInfo').innerHTML = `📅 ${dataFormatada}`;
+    }
+
+    // Mostrar uma mensagem de elogio aleatória
+    function mostrarElogio(missaoTexto) {
+        const elogio = mensagensElogio[Math.floor(Math.random() * mensagensElogio.length)];
+        const container = document.getElementById('missoesContainer');
+        
+        // Verificar se já existe uma mensagem e remover
+        const msgAntiga = document.querySelector('.mensagem-elogio');
+        if (msgAntiga) msgAntiga.remove();
+        
+        const msgDiv = document.createElement('div');
+        msgDiv.className = 'mensagem-elogio';
+        msgDiv.innerHTML = `
+            ✨ <strong>Você completou:</strong> "${missaoTexto}"<br><br>
+            ${elogio} ✨
+        `;
+        container.appendChild(msgDiv);
+        
+        // Rolar suavemente para a mensagem
+        msgDiv.scrollIntoView({ behavior: 'smooth', block: 'nearest' });
+        
+        // Remover após 5 segundos
+        setTimeout(() => {
+            if (msgDiv.parentNode) msgDiv.remove();
+        }, 5000);
+    }
+
+    // Renderizar as missões na tela
+    function renderizarMissoes() {
+        const container = document.getElementById('missoesContainer');
+        container.innerHTML = '';
+        
+        // Missão Física
+        const missaoFisico = missaoAtualFisico || obterMissoesDoDia(diaAtual).fisico;
+        const cardFisico = document.createElement('div');
+        cardFisico.className = 'missao-card';
+        cardFisico.innerHTML = `
+            <div><span class="tipo-badge tipo-fisico">💪 MISSÃO SAÚDE FÍSICA</span></div>
+            <div class="missao-texto">${missaoFisico.texto}</div>
+            <div class="botoes-missao">
+                <button class="btn-missao btn-concluir" data-tipo="fisico" data-texto="${missaoFisico.texto.replace(/"/g, '&quot;')}">✅ Já fiz essa missão</button>
+                <button class="btn-missao btn-pular" data-tipo="fisico">🔄 Pular (outra missão)</button>
+            </div>
+        `;
+        container.appendChild(cardFisico);
+        
+        // Missão Mental
+        const missaoMental = missaoAtualMental || obterMissoesDoDia(diaAtual).mental;
+        const cardMental = document.createElement('div');
+        cardMental.className = 'missao-card';
+        cardMental.innerHTML = `
+            <div><span class="tipo-badge tipo-mental">🧠 MISSÃO SAÚDE MENTAL</span></div>
+            <div class="missao-texto">${missaoMental.texto}</div>
+            <div class="botoes-missao">
+                <button class="btn-missao btn-concluir" data-tipo="mental" data-texto="${missaoMental.texto.replace(/"/g, '&quot;')}">✅ Já fiz essa missão</button>
+                <button class="btn-missao btn-pular" data-tipo="mental">🔄 Pular (outra missão)</button>
+            </div>
+        `;
+        container.appendChild(cardMental);
+        
+        // Adicionar eventos
+        document.querySelectorAll('.btn-concluir').forEach(btn => {
+            btn.addEventListener('click', (e) => {
+                const texto = btn.getAttribute('data-texto');
+                mostrarElogio(texto);
+            });
+        });
+        
+        document.querySelectorAll('.btn-pular').forEach(btn => {
+            btn.addEventListener('click', (e) => {
+                const tipo = btn.getAttribute('data-tipo');
+                const novaMissao = sortearMissaoAleatoria(tipo);
+                if (tipo === 'fisico') {
+                    missaoAtualFisico = novaMissao;
+                } else {
+                    missaoAtualMental = novaMissao;
+                }
+                renderizarMissoes();
+            });
+        });
+    }
+    
+    // ============================================================
+    // 4. INICIALIZAR
+    // ============================================================
+    function inicializar() {
+        diaAtual = obterDiaDoMes();
+        mostrarData();
+        
+        // Carregar missões salvas no localStorage (para persistir o "pular" do dia)
+        const salvoFisico = localStorage.getItem('missao_fisico_temp');
+        const salvoMental = localStorage.getItem('missao_mental_temp');
+        const diaSalvo = localStorage.getItem('missao_dia');
+        
+        if (diaSalvo == diaAtual) {
+            if (salvoFisico) missaoAtualFisico = JSON.parse(salvoFisico);
+            if (salvoMental) missaoAtualMental = JSON.parse(salvoMental);
+        } else {
+            // Novo dia, limpa as missões temporárias
+            localStorage.removeItem('missao_fisico_temp');
+            localStorage.removeItem('missao_mental_temp');
+            localStorage.setItem('missao_dia', diaAtual);
+            missaoAtualFisico = null;
+            missaoAtualMental = null;
+        }
+        
+        renderizarMissoes();
+    }
+    
+    // Salvar missões temporárias quando pular
+    function salvarMissaoTemporaria() {
+        if (missaoAtualFisico) {
+            localStorage.setItem('missao_fisico_temp', JSON.stringify(missaoAtualFisico));
+        }
+        if (missaoAtualMental) {
+            localStorage.setItem('missao_mental_temp', JSON.stringify(missaoAtualMental));
+        }
+    }
+    
+    // Observar mudanças nas missões e salvar
+    const observer = new MutationObserver(() => {
+        salvarMissaoTemporaria();
+    });
+    
+    inicializar();
+    
+    // Observar o container para salvar mudanças
+    setTimeout(() => {
+        observer.observe(document.getElementById('missoesContainer'), { childList: true, subtree: true });
+    }, 500);
+</script>
+</body>
+</html>

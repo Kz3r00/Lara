@@ -1,0 +1,893 @@
+<!DOCTYPE html>
+<html lang="pt-br">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0, user-scalable=yes">
+    <title>💕 Surpresa Especial</title>
+    <style>
+        /* ============================================================
+           ESTILOS GERAIS
+           ============================================================ */
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+
+        body {
+            font-family: 'Segoe UI', 'Helvetica Neue', system-ui, sans-serif;
+            min-height: 100vh;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            padding: 20px;
+            overflow: hidden;
+            background: #0a0a1a;
+            transition: background 0.8s ease;
+        }
+
+        .container {
+            width: 100%;
+            max-width: 600px;
+            min-height: 500px;
+            background: rgba(255, 255, 255, 0.95);
+            border-radius: 40px;
+            padding: 35px 30px;
+            box-shadow: 0 30px 60px rgba(0,0,0,0.5);
+            position: relative;
+            overflow: hidden;
+            animation: fadeIn 0.6s ease;
+        }
+
+        @keyframes fadeIn {
+            from { opacity: 0; transform: scale(0.95); }
+            to { opacity: 1; transform: scale(1); }
+        }
+
+        @keyframes slideUp {
+            from { opacity: 0; transform: translateY(30px); }
+            to { opacity: 1; transform: translateY(0); }
+        }
+
+        .pergunta-container {
+            animation: slideUp 0.5s ease;
+            position: relative;
+            z-index: 2;
+        }
+
+        .pergunta-numero {
+            font-size: 0.8rem;
+            color: #888;
+            margin-bottom: 5px;
+            font-weight: bold;
+        }
+
+        .pergunta-titulo {
+            font-size: 1.1rem;
+            color: #555;
+            margin-bottom: 15px;
+            font-style: italic;
+        }
+
+        .pergunta-texto {
+            font-size: 1.4rem;
+            font-weight: bold;
+            color: #2c3e50;
+            margin-bottom: 25px;
+            line-height: 1.4;
+        }
+
+        /* Opções */
+        .opcoes {
+            display: flex;
+            flex-direction: column;
+            gap: 12px;
+            margin: 20px 0;
+        }
+
+        .opcao-btn {
+            padding: 14px 20px;
+            border: 2px solid #ddd;
+            border-radius: 16px;
+            background: white;
+            font-size: 1rem;
+            cursor: pointer;
+            transition: all 0.2s ease;
+            text-align: left;
+            font-weight: 500;
+            color: #2c3e50;
+        }
+
+        .opcao-btn:hover {
+            border-color: #9b59b6;
+            background: #f8f0ff;
+        }
+
+        .opcao-btn:active {
+            transform: scale(0.97);
+        }
+
+        .opcao-btn.certa {
+            border-color: #27ae60;
+            background: #eafaf1;
+            color: #27ae60;
+        }
+
+        .opcao-btn.errada {
+            border-color: #e74c3c;
+            background: #fdedec;
+            color: #e74c3c;
+        }
+
+        .opcao-btn:disabled {
+            cursor: not-allowed;
+            opacity: 0.7;
+        }
+
+        /* Campo aberto */
+        .campo-aberto {
+            margin: 20px 0;
+        }
+
+        .campo-aberto textarea {
+            width: 100%;
+            padding: 15px;
+            border-radius: 16px;
+            border: 2px solid #ddd;
+            font-size: 1rem;
+            font-family: inherit;
+            resize: vertical;
+            min-height: 80px;
+            transition: border 0.3s;
+        }
+
+        .campo-aberto textarea:focus {
+            border-color: #9b59b6;
+            outline: none;
+        }
+
+        .btn-enviar {
+            padding: 12px 30px;
+            border: none;
+            border-radius: 30px;
+            font-size: 1rem;
+            font-weight: bold;
+            cursor: pointer;
+            transition: all 0.2s ease;
+            margin-top: 10px;
+            background: #9b59b6;
+            color: white;
+        }
+
+        .btn-enviar:hover {
+            background: #8e44ad;
+            transform: scale(1.02);
+        }
+
+        .btn-enviar:active {
+            transform: scale(0.96);
+        }
+
+        /* Mensagem de resultado */
+        .mensagem-resultado {
+            margin-top: 20px;
+            padding: 20px;
+            border-radius: 16px;
+            background: #f8f0ff;
+            font-size: 1.1rem;
+            line-height: 1.6;
+            color: #2c3e50;
+            animation: slideUp 0.4s ease;
+            border-left: 4px solid #9b59b6;
+        }
+
+        .mensagem-resultado .destaque {
+            color: #9b59b6;
+            font-weight: bold;
+        }
+
+        /* Botão próximo */
+        .btn-proximo {
+            display: none;
+            margin-top: 20px;
+            padding: 14px 35px;
+            border: none;
+            border-radius: 30px;
+            font-size: 1rem;
+            font-weight: bold;
+            cursor: pointer;
+            background: linear-gradient(135deg, #9b59b6, #8e44ad);
+            color: white;
+            transition: all 0.2s ease;
+        }
+
+        .btn-proximo:hover {
+            transform: scale(1.02);
+            box-shadow: 0 5px 20px rgba(155, 89, 182, 0.4);
+        }
+
+        .btn-proximo:active {
+            transform: scale(0.96);
+        }
+
+        .btn-proximo.visible {
+            display: inline-block;
+            animation: slideUp 0.4s ease;
+        }
+
+        /* Tela de suspense */
+        .tela-suspense {
+            text-align: center;
+            padding: 40px 20px;
+            animation: slideUp 0.8s ease;
+        }
+
+        .tela-suspense h2 {
+            font-size: 2rem;
+            color: #6c3483;
+            margin-bottom: 20px;
+        }
+
+        .tela-suspense p {
+            font-size: 1.2rem;
+            color: #4a235a;
+            line-height: 1.8;
+            margin-bottom: 30px;
+        }
+
+        .tela-suspense .btn-suspense {
+            padding: 16px 40px;
+            border: none;
+            border-radius: 40px;
+            font-size: 1.2rem;
+            font-weight: bold;
+            cursor: pointer;
+            background: linear-gradient(135deg, #6c3483, #4a235a);
+            color: white;
+            transition: all 0.3s ease;
+        }
+
+        .tela-suspense .btn-suspense:hover {
+            transform: scale(1.05);
+            box-shadow: 0 5px 30px rgba(108, 52, 131, 0.5);
+        }
+
+        /* Tela final - Pedido */
+        .tela-pedido {
+            text-align: center;
+            padding: 30px 20px;
+            animation: slideUp 0.6s ease;
+        }
+
+        .tela-pedido h2 {
+            font-size: 1.8rem;
+            color: #c0392b;
+            margin-bottom: 20px;
+        }
+
+        .tela-pedido p {
+            font-size: 1.1rem;
+            color: #2c3e50;
+            line-height: 1.8;
+            margin-bottom: 30px;
+        }
+
+        .botoes-pedido {
+            display: flex;
+            gap: 20px;
+            justify-content: center;
+            flex-wrap: wrap;
+        }
+
+        .btn-pedido {
+            padding: 16px 40px;
+            border: none;
+            border-radius: 50px;
+            font-size: 1.2rem;
+            font-weight: bold;
+            cursor: pointer;
+            transition: all 0.3s ease;
+        }
+
+        .btn-pedido-sim {
+            background: linear-gradient(135deg, #e74c3c, #c0392b);
+            color: white;
+        }
+
+        .btn-pedido-sim:hover {
+            transform: scale(1.05);
+            box-shadow: 0 5px 30px rgba(231, 76, 60, 0.5);
+        }
+
+        .btn-pedido-claro {
+            background: linear-gradient(135deg, #e91e63, #ad1457);
+            color: white;
+        }
+
+        .btn-pedido-claro:hover {
+            transform: scale(1.05);
+            box-shadow: 0 5px 30px rgba(233, 30, 99, 0.5);
+        }
+
+        .tela-final {
+            text-align: center;
+            padding: 40px 20px;
+            animation: slideUp 0.6s ease;
+        }
+
+        .tela-final h1 {
+            font-size: 2.5rem;
+            color: #c0392b;
+            margin-bottom: 15px;
+        }
+
+        .tela-final p {
+            font-size: 1.3rem;
+            color: #2c3e50;
+            line-height: 1.8;
+        }
+
+        /* Efeitos de fundo */
+        .bg-effect {
+            position: absolute;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            pointer-events: none;
+            z-index: 0;
+            overflow: hidden;
+        }
+
+        .bg-effect .particle {
+            position: absolute;
+            opacity: 0.2;
+            font-size: 1.5rem;
+            animation: floatParticle 8s infinite linear;
+        }
+
+        @keyframes floatParticle {
+            0% { transform: translateY(100%) rotate(0deg); opacity: 0; }
+            10% { opacity: 0.2; }
+            90% { opacity: 0.2; }
+            100% { transform: translateY(-100%) rotate(720deg); opacity: 0; }
+        }
+
+        /* Corações flutuantes */
+        .heart-rain {
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            pointer-events: none;
+            z-index: 9999;
+            overflow: hidden;
+        }
+
+        .heart-rain .heart {
+            position: absolute;
+            font-size: 2rem;
+            animation: heartFall linear forwards;
+            color: #e74c3c;
+        }
+
+        @keyframes heartFall {
+            0% { transform: translateY(-20px) rotate(0deg); opacity: 1; }
+            100% { transform: translateY(100vh) rotate(720deg); opacity: 0; }
+        }
+
+        /* Confetes */
+        .confetti-container {
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            pointer-events: none;
+            z-index: 9998;
+            overflow: hidden;
+        }
+
+        .confetti {
+            position: absolute;
+            width: 10px;
+            height: 10px;
+            animation: confettiFall linear forwards;
+        }
+
+        @keyframes confettiFall {
+            0% { transform: translateY(-20px) rotate(0deg); opacity: 1; }
+            100% { transform: translateY(100vh) rotate(720deg); opacity: 0; }
+        }
+
+        .hidden {
+            display: none !important;
+        }
+
+        /* Responsivo */
+        @media (max-width: 480px) {
+            .container {
+                padding: 25px 20px;
+                min-height: 400px;
+            }
+            .pergunta-texto {
+                font-size: 1.1rem;
+            }
+            .opcao-btn {
+                padding: 12px 16px;
+                font-size: 0.9rem;
+            }
+            .tela-pedido h2 {
+                font-size: 1.4rem;
+            }
+            .btn-pedido {
+                padding: 14px 30px;
+                font-size: 1rem;
+            }
+            .tela-suspense h2 {
+                font-size: 1.5rem;
+            }
+        }
+    </style>
+</head>
+<body>
+
+<div class="container" id="container">
+    <!-- Efeitos de fundo -->
+    <div class="bg-effect" id="bgEffect"></div>
+
+    <!-- Conteúdo principal -->
+    <div id="conteudo"></div>
+</div>
+
+<!-- Elementos para efeitos -->
+<div class="heart-rain" id="heartRain"></div>
+<div class="confetti-container" id="confettiContainer"></div>
+
+<script>
+    // ============================================================
+    // DADOS DAS PERGUNTAS
+    // ============================================================
+
+    const perguntas = [
+        // Pergunta 1 - Matemática
+        {
+            id: 1,
+            titulo: "🧮 Matemática",
+            pergunta: "100 x 100 = ?",
+            tipo: "opcoes",
+            opcoes: ["100", "1000", "10000", "100000"],
+            respostaCorreta: "10000",
+            mensagem: "Acertou! Mas nem o maior número do universo pode medir o meu amor por você. 💫",
+            corFundo: "linear-gradient(135deg, #0c1445, #1a237e)",
+            corContainer: "rgba(255,255,255,0.95)",
+            efeito: "numeros"
+        },
+        // Pergunta 2 - Geometria
+        {
+            id: 2,
+            titulo: "📐 Geometria",
+            pergunta: "Qual o símbolo geométrico mais resistente?",
+            tipo: "opcoes",
+            opcoes: ["Triângulo", "Quadrado", "Círculo", "Hexágono"],
+            respostaCorreta: "Triângulo",
+            mensagem: "Pode até ser... mas ainda assim não é tão forte quanto o nosso amor. 🔺",
+            corFundo: "linear-gradient(135deg, #0a0a0a, #1a1a2e)",
+            corContainer: "rgba(255,255,255,0.92)",
+            efeito: "geometria"
+        },
+        // Pergunta 3 - Geografia
+        {
+            id: 3,
+            titulo: "🌍 Geografia",
+            pergunta: "Qual a distância entre a Terra e o Sol?",
+            tipo: "opcoes",
+            opcoes: ["50 milhões km", "100 milhões km", "150 milhões km", "200 milhões km"],
+            respostaCorreta: "150 milhões km",
+            mensagem: "Deve ser eu acho... Mas mesmo essa distância enorme é pequena perto do quanto eu penso em você. 🌍",
+            corFundo: "linear-gradient(135deg, #0d47a1, #1565c0)",
+            corContainer: "rgba(255,255,255,0.95)",
+            efeito: "globo"
+        },
+        // Pergunta 4 - Flores
+        {
+            id: 4,
+            titulo: "🌸 Flores",
+            pergunta: "Qual a flor mais bela do mundo?",
+            tipo: "opcoes",
+            opcoes: ["Orquídea", "Lírio", "Rosas", "Girassóis"],
+            respostaCorreta: "nenhuma",
+            mensagem: "A flor mais bela é você — uma flor tão rara que nem os jardins mais antigos do mundo já viram igual. 🌸",
+            corFundo: "linear-gradient(180deg, #0d47a1 0%, #4caf50 40%, #81c784 100%)",
+            corContainer: "rgba(255,255,255,0.95)",
+            efeito: "petalas"
+        },
+        // Pergunta 5 - Pôr do Sol (ABERTA)
+        {
+            id: 5,
+            titulo: "🌅 Pôr do Sol",
+            pergunta: "Onde fica o pôr do sol mais bonito do mundo?",
+            tipo: "aberta",
+            mensagem: "O pôr do sol mais bonito é o que reflete nos seus olhos quando você sorri. 🌅",
+            corFundo: "linear-gradient(135deg, #ff6f00, #ff8f00, #ff6f00)",
+            corContainer: "rgba(255,255,255,0.95)",
+            efeito: "raios"
+        },
+        // Pergunta 6 - Estrelas
+        {
+            id: 6,
+            titulo: "⭐ Estrelas",
+            pergunta: "Qual a estrela mais brilhante do céu?",
+            tipo: "opcoes",
+            opcoes: ["Sirius", "Vênus", "Estrela Polar", "Betelgeuse"],
+            respostaCorreta: "nenhuma",
+            mensagem: "A estrela mais brilhante é você, iluminando meu mundo mesmo nos dias mais escuros. ⭐",
+            corFundo: "linear-gradient(135deg, #0a0a2e, #1a1a4e)",
+            corContainer: "rgba(255,255,255,0.95)",
+            efeito: "estrelas"
+        },
+        // Pergunta 7 - Escola (ABERTA)
+        {
+            id: 7,
+            titulo: "📚 Matérias da Escola",
+            pergunta: "Qual matéria escolar é a mais importante?",
+            tipo: "aberta",
+            mensagem: "A matéria mais importante é você — e eu vou estudar ela a vida inteira. 📚",
+            corFundo: "linear-gradient(135deg, #1b5e20, #2e7d32, #1b5e20)",
+            corContainer: "rgba(255,255,255,0.95)",
+            efeito: "giz"
+        },
+        // Pergunta 8 - Harry Potter (ABERTA)
+        {
+            id: 8,
+            titulo: "⚡ Harry Potter",
+            pergunta: "Qual a bruxa mais linda de toda a ficção?",
+            tipo: "aberta",
+            mensagem: "Nem a magia mais poderosa do mundo criaria alguém tão linda quanto você. ⚡",
+            corFundo: "linear-gradient(135deg, #1a0a2e, #4a1a6e, #1a0a2e)",
+            corContainer: "rgba(255,255,255,0.95)",
+            efeito: "varinha"
+        },
+        // Pergunta 9 - Coração (ABERTA)
+        {
+            id: 9,
+            titulo: "💭 A Pergunta do Coração",
+            pergunta: "Se você pudesse descrever o que sente por mim em uma palavra, qual seria?",
+            tipo: "aberta",
+            mensagem: "💕 Eu também te amo! 💕",
+            corFundo: "linear-gradient(135deg, #e91e63, #9b59b6)",
+            corContainer: "rgba(255,255,255,0.95)",
+            efeito: "coracoes"
+        }
+    ];
+
+    // ============================================================
+    // ESTADO
+    // ============================================================
+
+    let perguntaAtual = 0;
+    let respostas = [];
+
+    // ============================================================
+    // FUNÇÕES DE EFEITOS
+    // ============================================================
+
+    function criarEfeito(efeito) {
+        const bg = document.getElementById('bgEffect');
+        bg.innerHTML = '';
+
+        if (efeito === 'numeros') {
+            const nums = ['0','1','2','3','4','5','6','7','8','9'];
+            for (let i = 0; i < 30; i++) {
+                const el = document.createElement('span');
+                el.className = 'particle';
+                el.textContent = nums[Math.floor(Math.random() * nums.length)];
+                el.style.left = Math.random() * 100 + '%';
+                el.style.animationDuration = (6 + Math.random() * 4) + 's';
+                el.style.animationDelay = (Math.random() * 5) + 's';
+                el.style.fontSize = (1 + Math.random() * 2) + 'rem';
+                el.style.color = '#4fc3f7';
+                bg.appendChild(el);
+            }
+        } else if (efeito === 'geometria') {
+            const formas = ['△','□','○','⬡'];
+            for (let i = 0; i < 25; i++) {
+                const el = document.createElement('span');
+                el.className = 'particle';
+                el.textContent = formas[Math.floor(Math.random() * formas.length)];
+                el.style.left = Math.random() * 100 + '%';
+                el.style.animationDuration = (5 + Math.random() * 5) + 's';
+                el.style.animationDelay = (Math.random() * 4) + 's';
+                el.style.fontSize = (1.5 + Math.random() * 2) + 'rem';
+                el.style.color = ['#e74c3c','#f39c12','#2ecc71','#3498db'][Math.floor(Math.random()*4)];
+                bg.appendChild(el);
+            }
+        } else if (efeito === 'globo') {
+            const globos = ['🌍','🌎','🌏'];
+            for (let i = 0; i < 20; i++) {
+                const el = document.createElement('span');
+                el.className = 'particle';
+                el.textContent = globos[Math.floor(Math.random() * globos.length)];
+                el.style.left = Math.random() * 100 + '%';
+                el.style.animationDuration = (6 + Math.random() * 5) + 's';
+                el.style.animationDelay = (Math.random() * 4) + 's';
+                el.style.fontSize = (1.5 + Math.random() * 2) + 'rem';
+                bg.appendChild(el);
+            }
+        } else if (efeito === 'petalas') {
+            const petalas = ['🌸','🌺','🌷','🌹'];
+            for (let i = 0; i < 25; i++) {
+                const el = document.createElement('span');
+                el.className = 'particle';
+                el.textContent = petalas[Math.floor(Math.random() * petalas.length)];
+                el.style.left = Math.random() * 100 + '%';
+                el.style.animationDuration = (5 + Math.random() * 6) + 's';
+                el.style.animationDelay = (Math.random() * 5) + 's';
+                el.style.fontSize = (1 + Math.random() * 2) + 'rem';
+                bg.appendChild(el);
+            }
+        } else if (efeito === 'raios') {
+            const raios = ['☀️','🌅','✨'];
+            for (let i = 0; i < 20; i++) {
+                const el = document.createElement('span');
+                el.className = 'particle';
+                el.textContent = raios[Math.floor(Math.random() * raios.length)];
+                el.style.left = Math.random() * 100 + '%';
+                el.style.animationDuration = (5 + Math.random() * 5) + 's';
+                el.style.animationDelay = (Math.random() * 4) + 's';
+                el.style.fontSize = (1.5 + Math.random() * 2) + 'rem';
+                bg.appendChild(el);
+            }
+        } else if (efeito === 'estrelas') {
+            const estrelas = ['⭐','✨','🌟'];
+            for (let i = 0; i < 30; i++) {
+                const el = document.createElement('span');
+                el.className = 'particle';
+                el.textContent = estrelas[Math.floor(Math.random() * estrelas.length)];
+                el.style.left = Math.random() * 100 + '%';
+                el.style.animationDuration = (4 + Math.random() * 6) + 's';
+                el.style.animationDelay = (Math.random() * 5) + 's';
+                el.style.fontSize = (0.8 + Math.random() * 2) + 'rem';
+                el.style.color = '#ffd700';
+                bg.appendChild(el);
+            }
+        } else if (efeito === 'giz') {
+            const giz = ['✏️','📐','📚'];
+            for (let i = 0; i < 20; i++) {
+                const el = document.createElement('span');
+                el.className = 'particle';
+                el.textContent = giz[Math.floor(Math.random() * giz.length)];
+                el.style.left = Math.random() * 100 + '%';
+                el.style.animationDuration = (5 + Math.random() * 5) + 's';
+                el.style.animationDelay = (Math.random() * 4) + 's';
+                el.style.fontSize = (1.5 + Math.random() * 2) + 'rem';
+                bg.appendChild(el);
+            }
+        } else if (efeito === 'varinha') {
+            const magia = ['⚡','✨','🌟','🪄'];
+            for (let i = 0; i < 25; i++) {
+                const el = document.createElement('span');
+                el.className = 'particle';
+                el.textContent = magia[Math.floor(Math.random() * magia.length)];
+                el.style.left = Math.random() * 100 + '%';
+                el.style.animationDuration = (3 + Math.random() * 5) + 's';
+                el.style.animationDelay = (Math.random() * 4) + 's';
+                el.style.fontSize = (1 + Math.random() * 2) + 'rem';
+                el.style.color = '#ffd700';
+                bg.appendChild(el);
+            }
+        } else if (efeito === 'coracoes') {
+            const hearts = ['❤️','💕','💗','💖','💘'];
+            for (let i = 0; i < 30; i++) {
+                const el = document.createElement('span');
+                el.className = 'particle';
+                el.textContent = hearts[Math.floor(Math.random() * hearts.length)];
+                el.style.left = Math.random() * 100 + '%';
+                el.style.animationDuration = (4 + Math.random() * 5) + 's';
+                el.style.animationDelay = (Math.random() * 4) + 's';
+                el.style.fontSize = (1 + Math.random() * 2) + 'rem';
+                el.style.color = '#e74c3c';
+                bg.appendChild(el);
+            }
+        }
+    }
+
+    function chuvaDeCoracoes() {
+        const container = document.getElementById('heartRain');
+        const hearts = ['❤️','💕','💗','💖','💘','♥️'];
+        for (let i = 0; i < 60; i++) {
+            setTimeout(() => {
+                const heart = document.createElement('div');
+                heart.className = 'heart';
+                heart.textContent = hearts[Math.floor(Math.random() * hearts.length)];
+                heart.style.left = Math.random() * 100 + '%';
+                heart.style.fontSize = (1 + Math.random() * 2.5) + 'rem';
+                heart.style.animationDuration = (2 + Math.random() * 3) + 's';
+                heart.style.animationDelay = '0s';
+                container.appendChild(heart);
+                setTimeout(() => heart.remove(), 5000);
+            }, i * 80);
+        }
+    }
+
+    function confetes() {
+        const container = document.getElementById('confettiContainer');
+        const cores = ['#e74c3c','#f39c12','#2ecc71','#3498db','#9b59b6','#e91e63','#ff6f00','#00bcd4'];
+        for (let i = 0; i < 100; i++) {
+            setTimeout(() => {
+                const confetti = document.createElement('div');
+                confetti.className = 'confetti';
+                confetti.style.left = Math.random() * 100 + '%';
+                confetti.style.width = (5 + Math.random() * 10) + 'px';
+                confetti.style.height = (5 + Math.random() * 10) + 'px';
+                confetti.style.background = cores[Math.floor(Math.random() * cores.length)];
+                confetti.style.borderRadius = Math.random() > 0.5 ? '50%' : '2px';
+                confetti.style.animationDuration = (2 + Math.random() * 3) + 's';
+                confetti.style.animationDelay = '0s';
+                container.appendChild(confetti);
+                setTimeout(() => confetti.remove(), 5000);
+            }, i * 50);
+        }
+    }
+
+    // ============================================================
+    // RENDERIZAÇÃO
+    // ============================================================
+
+    function renderizarPergunta(index) {
+        const p = perguntas[index];
+        const container = document.getElementById('container');
+        const conteudo = document.getElementById('conteudo');
+
+        // Atualizar fundo
+        document.body.style.background = p.corFundo;
+
+        // Criar efeito
+        criarEfeito(p.efeito);
+
+        let html = `<div class="pergunta-container">`;
+        html += `<div class="pergunta-numero">Pergunta ${p.id} de ${perguntas.length}</div>`;
+        html += `<div class="pergunta-titulo">${p.titulo}</div>`;
+        html += `<div class="pergunta-texto">${p.pergunta}</div>`;
+
+        if (p.tipo === 'opcoes') {
+            html += `<div class="opcoes" id="opcoes">`;
+            p.opcoes.forEach((opcao, i) => {
+                html += `<button class="opcao-btn" data-index="${i}" data-opcao="${opcao}">${opcao}</button>`;
+            });
+            html += `</div>`;
+            html += `<div id="resultado"></div>`;
+            html += `<button class="btn-proximo" id="btnProximo">Próxima pergunta ➜</button>`;
+        } else {
+            html += `<div class="campo-aberto">`;
+            html += `<textarea id="respostaAberta" placeholder="Digite sua resposta aqui..."></textarea>`;
+            html += `<button class="btn-enviar" id="btnEnviarAberta">💕 Enviar resposta</button>`;
+            html += `</div>`;
+            html += `<div id="resultado"></div>`;
+            html += `<button class="btn-proximo" id="btnProximo">Próxima pergunta ➜</button>`;
+        }
+
+        html += `</div>`;
+        conteudo.innerHTML = html;
+
+        // Eventos
+        if (p.tipo === 'opcoes') {
+            const botoes = document.querySelectorAll('.opcao-btn');
+            const btnProximo = document.getElementById('btnProximo');
+
+            botoes.forEach(btn => {
+                btn.addEventListener('click', function() {
+                    if (this.disabled) return;
+                    const opcao = this.getAttribute('data-opcao');
+                    const resultadoDiv = document.getElementById('resultado');
+                    
+                    botoes.forEach(b => b.disabled = true);
+
+                    let acertou = false;
+                    if (p.respostaCorreta === 'nenhuma') {
+                        // Sempre erra
+                        this.classList.add('errada');
+                        resultadoDiv.innerHTML = `<div class="mensagem-resultado">${p.mensagem}</div>`;
+                    } else if (opcao === p.respostaCorreta) {
+                        this.classList.add('certa');
+                        acertou = true;
+                        resultadoDiv.innerHTML = `<div class="mensagem-resultado">${p.mensagem}</div>`;
+                    } else {
+                        this.classList.add('errada');
+                        // Mostrar qual era a certa
+                        botoes.forEach(b => {
+                            if (b.getAttribute('data-opcao') === p.respostaCorreta) {
+                                b.classList.add('certa');
+                            }
+                        });
+                        resultadoDiv.innerHTML = `<div class="mensagem-resultado">${p.mensagem}</div>`;
+                    }
+
+                    btnProximo.classList.add('visible');
+                });
+            });
+
+            btnProximo.addEventListener('click', function() {
+                if (index < perguntas.length - 1) {
+                    perguntaAtual++;
+                    renderizarPergunta(perguntaAtual);
+                } else {
+                    mostrarSuspense();
+                }
+            });
+        } else {
+            // Tipo aberta
+            const btnEnviar = document.getElementById('btnEnviarAberta');
+            const textarea = document.getElementById('respostaAberta');
+            const resultadoDiv = document.getElementById('resultado');
+            const btnProximo = document.getElementById('btnProximo');
+
+            btnEnviar.addEventListener('click', function() {
+                const resposta = textarea.value.trim();
+                if (!resposta) {
+                    alert('💕 Escreva sua resposta primeiro!');
+                    return;
+                }
+
+                respostas.push(resposta);
+                resultadoDiv.innerHTML = `<div class="mensagem-resultado">${p.mensagem}</div>`;
+                textarea.disabled = true;
+                btnEnviar.disabled = true;
+                btnProximo.classList.add('visible');
+            });
+
+            btnProximo.addEventListener('click', function() {
+                if (index < perguntas.length - 1) {
+                    perguntaAtual++;
+                    renderizarPergunta(perguntaAtual);
+                } else {
+                    mostrarSuspense();
+                }
+            });
+        }
+    }
+
+    // ============================================================
+    // TELA DE SUSPENSE
+    // ============================================================
+
+    function mostrarSuspense() {
+        document.body.style.background = 'linear-gradient(135deg, #0a0a0a, #1a0a2e, #0a0a0a)';
+        document.getElementById('bgEffect').innerHTML = '';
+
+        const conteudo = document.getElementById('conteudo');
+        conteudo.innerHTML = `
+            <div class="tela-suspense">
+                <h2>🌙 Lara...</h2>
+                <p>
+                    Você respondeu tudo.<br>
+                    Mas ainda tem uma última pergunta...<br><br>
+                    <strong style="font-size:1.4rem; color:#8e44ad;">A mais importante de todas.</strong><br><br>
+                    Você está pronta? 💫
+                </p>
+                <button class="btn-suspense" id="btnSuspense">Estou pronta 💜</button>
+            </div>
+        `;
+
+        document.getElementById('btnSuspense').addEventListener('click', mostrarPedido);
+    }
+
+    // ============================================================
+    // TELA DE PEDIDO
+    // ============================================================
+
+    function mostrarPedido() {
+        document.body.style.background = 'linear-gradient(135deg, #e74c3c, #c0392b, #e74c3c)';
+        document.getElementById('bgEffect').innerHTML = '';
+
+        const conteudo = document.getElementById('conteudo');
+        conteudo.innerHTML = `
+            <div class="tela-pedido">
+                <h2>💕 Lara 💕</h2>
+                <p>
+                    Depois da matemática, da geografia, das flores,<br>
+                    das estrelas, de Harry Potter e de todas as perguntas do mundo...<br><br>
+                    <strong style="font-size:1.3rem;">Só tem uma resposta que realmente importa.</strong>
+                </p>
+                <p style="

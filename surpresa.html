@@ -5,9 +5,6 @@
     <meta name="viewport" content="width=device-width, initial-scale=1.0, user-scalable=yes">
     <title>💕 Surpresa Especial</title>
     <style>
-        /* ============================================================
-           ESTILOS GERAIS
-           ============================================================ */
         * {
             margin: 0;
             padding: 0;
@@ -77,7 +74,6 @@
             line-height: 1.4;
         }
 
-        /* Opções */
         .opcoes {
             display: flex;
             flex-direction: column;
@@ -124,7 +120,6 @@
             opacity: 0.7;
         }
 
-        /* Campo aberto */
         .campo-aberto {
             margin: 20px 0;
         }
@@ -168,7 +163,6 @@
             transform: scale(0.96);
         }
 
-        /* Mensagem de resultado */
         .mensagem-resultado {
             margin-top: 20px;
             padding: 20px;
@@ -209,7 +203,6 @@
             animation: slideUp 0.4s ease;
         }
 
-        /* Tela de suspense */
         .tela-suspense {
             text-align: center;
             padding: 40px 20px;
@@ -246,7 +239,6 @@
             box-shadow: 0 5px 30px rgba(108, 52, 131, 0.5);
         }
 
-        /* Tela final - Pedido */
         .tela-pedido {
             text-align: center;
             padding: 30px 20px;
@@ -321,7 +313,6 @@
             line-height: 1.8;
         }
 
-        /* Efeitos de fundo */
         .bg-effect {
             position: absolute;
             top: 0;
@@ -347,7 +338,6 @@
             100% { transform: translateY(-100%) rotate(720deg); opacity: 0; }
         }
 
-        /* Corações flutuantes */
         .heart-rain {
             position: fixed;
             top: 0;
@@ -371,7 +361,6 @@
             100% { transform: translateY(100vh) rotate(720deg); opacity: 0; }
         }
 
-        /* Confetes */
         .confetti-container {
             position: fixed;
             top: 0;
@@ -399,7 +388,6 @@
             display: none !important;
         }
 
-        /* Responsivo */
         @media (max-width: 480px) {
             .container {
                 padding: 25px 20px;
@@ -428,24 +416,15 @@
 <body>
 
 <div class="container" id="container">
-    <!-- Efeitos de fundo -->
     <div class="bg-effect" id="bgEffect"></div>
-
-    <!-- Conteúdo principal -->
     <div id="conteudo"></div>
 </div>
 
-<!-- Elementos para efeitos -->
 <div class="heart-rain" id="heartRain"></div>
 <div class="confetti-container" id="confettiContainer"></div>
 
 <script>
-    // ============================================================
-    // DADOS DAS PERGUNTAS
-    // ============================================================
-
     const perguntas = [
-        // Pergunta 1 - Matemática
         {
             id: 1,
             titulo: "🧮 Matemática",
@@ -455,10 +434,8 @@
             respostaCorreta: "10000",
             mensagem: "Acertou! Mas nem o maior número do universo pode medir o meu amor por você. 💫",
             corFundo: "linear-gradient(135deg, #0c1445, #1a237e)",
-            corContainer: "rgba(255,255,255,0.95)",
             efeito: "numeros"
         },
-        // Pergunta 2 - Geometria
         {
             id: 2,
             titulo: "📐 Geometria",
@@ -468,10 +445,8 @@
             respostaCorreta: "Triângulo",
             mensagem: "Pode até ser... mas ainda assim não é tão forte quanto o nosso amor. 🔺",
             corFundo: "linear-gradient(135deg, #0a0a0a, #1a1a2e)",
-            corContainer: "rgba(255,255,255,0.92)",
             efeito: "geometria"
         },
-        // Pergunta 3 - Geografia
         {
             id: 3,
             titulo: "🌍 Geografia",
@@ -481,10 +456,8 @@
             respostaCorreta: "150 milhões km",
             mensagem: "Deve ser eu acho... Mas mesmo essa distância enorme é pequena perto do quanto eu penso em você. 🌍",
             corFundo: "linear-gradient(135deg, #0d47a1, #1565c0)",
-            corContainer: "rgba(255,255,255,0.95)",
             efeito: "globo"
         },
-        // Pergunta 4 - Flores
         {
             id: 4,
             titulo: "🌸 Flores",
@@ -494,10 +467,8 @@
             respostaCorreta: "nenhuma",
             mensagem: "A flor mais bela é você — uma flor tão rara que nem os jardins mais antigos do mundo já viram igual. 🌸",
             corFundo: "linear-gradient(180deg, #0d47a1 0%, #4caf50 40%, #81c784 100%)",
-            corContainer: "rgba(255,255,255,0.95)",
             efeito: "petalas"
         },
-        // Pergunta 5 - Pôr do Sol (ABERTA)
         {
             id: 5,
             titulo: "🌅 Pôr do Sol",
@@ -505,10 +476,8 @@
             tipo: "aberta",
             mensagem: "O pôr do sol mais bonito é o que reflete nos seus olhos quando você sorri. 🌅",
             corFundo: "linear-gradient(135deg, #ff6f00, #ff8f00, #ff6f00)",
-            corContainer: "rgba(255,255,255,0.95)",
             efeito: "raios"
         },
-        // Pergunta 6 - Estrelas
         {
             id: 6,
             titulo: "⭐ Estrelas",
@@ -518,10 +487,8 @@
             respostaCorreta: "nenhuma",
             mensagem: "A estrela mais brilhante é você, iluminando meu mundo mesmo nos dias mais escuros. ⭐",
             corFundo: "linear-gradient(135deg, #0a0a2e, #1a1a4e)",
-            corContainer: "rgba(255,255,255,0.95)",
             efeito: "estrelas"
         },
-        // Pergunta 7 - Escola (ABERTA)
         {
             id: 7,
             titulo: "📚 Matérias da Escola",
@@ -529,10 +496,8 @@
             tipo: "aberta",
             mensagem: "A matéria mais importante é você — e eu vou estudar ela a vida inteira. 📚",
             corFundo: "linear-gradient(135deg, #1b5e20, #2e7d32, #1b5e20)",
-            corContainer: "rgba(255,255,255,0.95)",
             efeito: "giz"
         },
-        // Pergunta 8 - Harry Potter (ABERTA)
         {
             id: 8,
             titulo: "⚡ Harry Potter",
@@ -540,10 +505,8 @@
             tipo: "aberta",
             mensagem: "Nem a magia mais poderosa do mundo criaria alguém tão linda quanto você. ⚡",
             corFundo: "linear-gradient(135deg, #1a0a2e, #4a1a6e, #1a0a2e)",
-            corContainer: "rgba(255,255,255,0.95)",
             efeito: "varinha"
         },
-        // Pergunta 9 - Coração (ABERTA)
         {
             id: 9,
             titulo: "💭 A Pergunta do Coração",
@@ -551,145 +514,51 @@
             tipo: "aberta",
             mensagem: "💕 Eu também te amo! 💕",
             corFundo: "linear-gradient(135deg, #e91e63, #9b59b6)",
-            corContainer: "rgba(255,255,255,0.95)",
             efeito: "coracoes"
         }
     ];
 
-    // ============================================================
-    // ESTADO
-    // ============================================================
-
     let perguntaAtual = 0;
-
-    // ============================================================
-    // FUNÇÕES DE EFEITOS
-    // ============================================================
 
     function criarEfeito(efeito) {
         const bg = document.getElementById('bgEffect');
         bg.innerHTML = '';
 
-        if (efeito === 'numeros') {
-            const nums = ['0','1','2','3','4','5','6','7','8','9'];
-            for (let i = 0; i < 30; i++) {
-                const el = document.createElement('span');
-                el.className = 'particle';
-                el.textContent = nums[Math.floor(Math.random() * nums.length)];
-                el.style.left = Math.random() * 100 + '%';
-                el.style.animationDuration = (6 + Math.random() * 4) + 's';
-                el.style.animationDelay = (Math.random() * 5) + 's';
-                el.style.fontSize = (1 + Math.random() * 2) + 'rem';
-                el.style.color = '#4fc3f7';
-                bg.appendChild(el);
-            }
-        } else if (efeito === 'geometria') {
-            const formas = ['△','□','○','⬡'];
-            for (let i = 0; i < 25; i++) {
-                const el = document.createElement('span');
-                el.className = 'particle';
-                el.textContent = formas[Math.floor(Math.random() * formas.length)];
-                el.style.left = Math.random() * 100 + '%';
-                el.style.animationDuration = (5 + Math.random() * 5) + 's';
-                el.style.animationDelay = (Math.random() * 4) + 's';
-                el.style.fontSize = (1.5 + Math.random() * 2) + 'rem';
-                el.style.color = ['#e74c3c','#f39c12','#2ecc71','#3498db'][Math.floor(Math.random()*4)];
-                bg.appendChild(el);
-            }
-        } else if (efeito === 'globo') {
-            const globos = ['🌍','🌎','🌏'];
-            for (let i = 0; i < 20; i++) {
-                const el = document.createElement('span');
-                el.className = 'particle';
-                el.textContent = globos[Math.floor(Math.random() * globos.length)];
-                el.style.left = Math.random() * 100 + '%';
-                el.style.animationDuration = (6 + Math.random() * 5) + 's';
-                el.style.animationDelay = (Math.random() * 4) + 's';
-                el.style.fontSize = (1.5 + Math.random() * 2) + 'rem';
-                bg.appendChild(el);
-            }
-        } else if (efeito === 'petalas') {
-            const petalas = ['🌸','🌺','🌷','🌹'];
-            for (let i = 0; i < 25; i++) {
-                const el = document.createElement('span');
-                el.className = 'particle';
-                el.textContent = petalas[Math.floor(Math.random() * petalas.length)];
-                el.style.left = Math.random() * 100 + '%';
-                el.style.animationDuration = (5 + Math.random() * 6) + 's';
-                el.style.animationDelay = (Math.random() * 5) + 's';
-                el.style.fontSize = (1 + Math.random() * 2) + 'rem';
-                bg.appendChild(el);
-            }
-        } else if (efeito === 'raios') {
-            const raios = ['☀️','🌅','✨'];
-            for (let i = 0; i < 20; i++) {
-                const el = document.createElement('span');
-                el.className = 'particle';
-                el.textContent = raios[Math.floor(Math.random() * raios.length)];
-                el.style.left = Math.random() * 100 + '%';
-                el.style.animationDuration = (5 + Math.random() * 5) + 's';
-                el.style.animationDelay = (Math.random() * 4) + 's';
-                el.style.fontSize = (1.5 + Math.random() * 2) + 'rem';
-                bg.appendChild(el);
-            }
-        } else if (efeito === 'estrelas') {
-            const estrelas = ['⭐','✨','🌟'];
-            for (let i = 0; i < 30; i++) {
-                const el = document.createElement('span');
-                el.className = 'particle';
-                el.textContent = estrelas[Math.floor(Math.random() * estrelas.length)];
-                el.style.left = Math.random() * 100 + '%';
-                el.style.animationDuration = (4 + Math.random() * 6) + 's';
-                el.style.animationDelay = (Math.random() * 5) + 's';
-                el.style.fontSize = (0.8 + Math.random() * 2) + 'rem';
-                el.style.color = '#ffd700';
-                bg.appendChild(el);
-            }
-        } else if (efeito === 'giz') {
-            const giz = ['✏️','📐','📚'];
-            for (let i = 0; i < 20; i++) {
-                const el = document.createElement('span');
-                el.className = 'particle';
-                el.textContent = giz[Math.floor(Math.random() * giz.length)];
-                el.style.left = Math.random() * 100 + '%';
-                el.style.animationDuration = (5 + Math.random() * 5) + 's';
-                el.style.animationDelay = (Math.random() * 4) + 's';
-                el.style.fontSize = (1.5 + Math.random() * 2) + 'rem';
-                bg.appendChild(el);
-            }
-        } else if (efeito === 'varinha') {
-            const magia = ['⚡','✨','🌟','🪄'];
-            for (let i = 0; i < 25; i++) {
-                const el = document.createElement('span');
-                el.className = 'particle';
-                el.textContent = magia[Math.floor(Math.random() * magia.length)];
-                el.style.left = Math.random() * 100 + '%';
-                el.style.animationDuration = (3 + Math.random() * 5) + 's';
-                el.style.animationDelay = (Math.random() * 4) + 's';
-                el.style.fontSize = (1 + Math.random() * 2) + 'rem';
-                el.style.color = '#ffd700';
-                bg.appendChild(el);
-            }
-        } else if (efeito === 'coracoes') {
-            const hearts = ['❤️','💕','💗','💖','💘'];
-            for (let i = 0; i < 30; i++) {
-                const el = document.createElement('span');
-                el.className = 'particle';
-                el.textContent = hearts[Math.floor(Math.random() * hearts.length)];
-                el.style.left = Math.random() * 100 + '%';
-                el.style.animationDuration = (4 + Math.random() * 5) + 's';
-                el.style.animationDelay = (Math.random() * 4) + 's';
-                el.style.fontSize = (1 + Math.random() * 2) + 'rem';
-                el.style.color = '#e74c3c';
-                bg.appendChild(el);
-            }
+        const emojis = {
+            numeros: ['0','1','2','3','4','5','6','7','8','9'],
+            geometria: ['△','□','○','⬡'],
+            globo: ['🌍','🌎','🌏'],
+            petalas: ['🌸','🌺','🌷','🌹'],
+            raios: ['☀️','🌅','✨'],
+            estrelas: ['⭐','✨','🌟'],
+            giz: ['✏️','📐','📚'],
+            varinha: ['⚡','✨','🌟','🪄'],
+            coracoes: ['❤️','💕','💗','💖','💘']
+        };
+
+        const lista = emojis[efeito] || ['✨'];
+        const cores = ['#e74c3c','#f39c12','#2ecc71','#3498db','#9b59b6','#e91e63','#ff6f00','#00bcd4'];
+
+        for (let i = 0; i < 25; i++) {
+            const el = document.createElement('span');
+            el.className = 'particle';
+            el.textContent = lista[Math.floor(Math.random() * lista.length)];
+            el.style.left = Math.random() * 100 + '%';
+            el.style.animationDuration = (4 + Math.random() * 5) + 's';
+            el.style.animationDelay = (Math.random() * 5) + 's';
+            el.style.fontSize = (1 + Math.random() * 2) + 'rem';
+            if (efeito === 'numeros') el.style.color = '#4fc3f7';
+            else if (efeito === 'estrelas' || efeito === 'varinha') el.style.color = '#ffd700';
+            else if (efeito === 'coracoes') el.style.color = '#e74c3c';
+            else el.style.color = cores[Math.floor(Math.random() * cores.length)];
+            bg.appendChild(el);
         }
     }
 
     function chuvaDeCoracoes() {
         const container = document.getElementById('heartRain');
         const hearts = ['❤️','💕','💗','💖','💘','♥️'];
-        for (let i = 0; i < 60; i++) {
+        for (let i = 0; i < 50; i++) {
             setTimeout(() => {
                 const heart = document.createElement('div');
                 heart.className = 'heart';
@@ -697,7 +566,6 @@
                 heart.style.left = Math.random() * 100 + '%';
                 heart.style.fontSize = (1 + Math.random() * 2.5) + 'rem';
                 heart.style.animationDuration = (2 + Math.random() * 3) + 's';
-                heart.style.animationDelay = '0s';
                 container.appendChild(heart);
                 setTimeout(() => heart.remove(), 5000);
             }, i * 80);
@@ -707,7 +575,7 @@
     function confetes() {
         const container = document.getElementById('confettiContainer');
         const cores = ['#e74c3c','#f39c12','#2ecc71','#3498db','#9b59b6','#e91e63','#ff6f00','#00bcd4'];
-        for (let i = 0; i < 100; i++) {
+        for (let i = 0; i < 80; i++) {
             setTimeout(() => {
                 const confetti = document.createElement('div');
                 confetti.className = 'confetti';
@@ -717,25 +585,17 @@
                 confetti.style.background = cores[Math.floor(Math.random() * cores.length)];
                 confetti.style.borderRadius = Math.random() > 0.5 ? '50%' : '2px';
                 confetti.style.animationDuration = (2 + Math.random() * 3) + 's';
-                confetti.style.animationDelay = '0s';
                 container.appendChild(confetti);
                 setTimeout(() => confetti.remove(), 5000);
             }, i * 50);
         }
     }
 
-    // ============================================================
-    // RENDERIZAÇÃO
-    // ============================================================
-
     function renderizarPergunta(index) {
         const p = perguntas[index];
         const conteudo = document.getElementById('conteudo');
 
-        // Atualizar fundo
         document.body.style.background = p.corFundo;
-
-        // Criar efeito
         criarEfeito(p.efeito);
 
         let html = `<div class="pergunta-container">`;
@@ -745,8 +605,8 @@
 
         if (p.tipo === 'opcoes') {
             html += `<div class="opcoes" id="opcoes">`;
-            p.opcoes.forEach((opcao, i) => {
-                html += `<button class="opcao-btn" data-index="${i}" data-opcao="${opcao}">${opcao}</button>`;
+            p.opcoes.forEach((opcao) => {
+                html += `<button class="opcao-btn" data-opcao="${opcao}">${opcao}</button>`;
             });
             html += `</div>`;
             html += `<div id="resultado"></div>`;
@@ -763,7 +623,6 @@
         html += `</div>`;
         conteudo.innerHTML = html;
 
-        // Eventos
         if (p.tipo === 'opcoes') {
             const botoes = document.querySelectorAll('.opcao-btn');
             const btnProximo = document.getElementById('btnProximo');
@@ -776,18 +635,14 @@
                     
                     botoes.forEach(b => b.disabled = true);
 
-                    let acertou = false;
                     if (p.respostaCorreta === 'nenhuma') {
-                        // Sempre erra
                         this.classList.add('errada');
                         resultadoDiv.innerHTML = `<div class="mensagem-resultado">${p.mensagem}</div>`;
                     } else if (opcao === p.respostaCorreta) {
                         this.classList.add('certa');
-                        acertou = true;
                         resultadoDiv.innerHTML = `<div class="mensagem-resultado">${p.mensagem}</div>`;
                     } else {
                         this.classList.add('errada');
-                        // Mostrar qual era a certa
                         botoes.forEach(b => {
                             if (b.getAttribute('data-opcao') === p.respostaCorreta) {
                                 b.classList.add('certa');
@@ -809,7 +664,6 @@
                 }
             });
         } else {
-            // Tipo aberta
             const btnEnviar = document.getElementById('btnEnviarAberta');
             const textarea = document.getElementById('respostaAberta');
             const resultadoDiv = document.getElementById('resultado');
@@ -839,10 +693,6 @@
         }
     }
 
-    // ============================================================
-    // TELA DE SUSPENSE
-    // ============================================================
-
     function mostrarSuspense() {
         document.body.style.background = 'linear-gradient(135deg, #0a0a0a, #1a0a2e, #0a0a0a)';
         document.getElementById('bgEffect').innerHTML = '';
@@ -864,10 +714,6 @@
         document.getElementById('btnSuspense').addEventListener('click', mostrarPedido);
     }
 
-    // ============================================================
-    // TELA DE PEDIDO
-    // ============================================================
-
     function mostrarPedido() {
         document.body.style.background = 'linear-gradient(135deg, #e74c3c, #c0392b, #e74c3c)';
         document.getElementById('bgEffect').innerHTML = '';
@@ -882,4 +728,43 @@
                     <strong style="font-size:1.3rem;">Só tem uma resposta que realmente importa.</strong>
                 </p>
                 <p style="font-size:1.5rem; font-weight:bold; color:#c0392b; margin:20px 0;">
-                    Você quer namorar comigo
+                    Você quer namorar comigo?
+                </p>
+                <div class="botoes-pedido">
+                    <button class="btn-pedido btn-pedido-sim" id="btnSim">💖 SIM</button>
+                    <button class="btn-pedido btn-pedido-claro" id="btnClaro">💕 CLARO QUE SIM</button>
+                </div>
+            </div>
+        `;
+
+        document.getElementById('btnSim').addEventListener('click', mostrarFinal);
+        document.getElementById('btnClaro').addEventListener('click', mostrarFinal);
+    }
+
+    function mostrarFinal() {
+        chuvaDeCoracoes();
+        confetes();
+
+        document.body.style.background = 'linear-gradient(135deg, #f9d423, #ff4e50)';
+
+        const conteudo = document.getElementById('conteudo');
+        conteudo.innerHTML = `
+            <div class="tela-final">
+                <h1>💕 EU SOU A PESSOA MAIS FELIZ DO MUNDO! 💕</h1>
+                <p style="font-size:2rem; margin:20px 0;">🥰</p>
+                <p>Você acabou de fazer meu coração explodir de alegria! ❤️</p>
+                <p style="margin-top:20px; font-size:1.2rem; color:#6c3483;">
+                    Prometo ser seu parceiro, seu amigo, seu apoio e seu amor para sempre. 💫
+                </p>
+                <p style="margin-top:30px; font-size:1rem; color:#888;">
+                    🎉 Agora é oficial: você é minha namorada! 🎉
+                </p>
+            </div>
+        `;
+    }
+
+    // INICIAR
+    renderizarPergunta(0);
+</script>
+</body>
+</html>

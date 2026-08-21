@@ -181,12 +181,6 @@
             border-left: 4px solid #9b59b6;
         }
 
-        .mensagem-resultado .destaque {
-            color: #9b59b6;
-            font-weight: bold;
-        }
-
-        /* Botão próximo */
         .btn-proximo {
             display: none;
             margin-top: 20px;
@@ -567,7 +561,6 @@
     // ============================================================
 
     let perguntaAtual = 0;
-    let respostas = [];
 
     // ============================================================
     // FUNÇÕES DE EFEITOS
@@ -737,7 +730,6 @@
 
     function renderizarPergunta(index) {
         const p = perguntas[index];
-        const container = document.getElementById('container');
         const conteudo = document.getElementById('conteudo');
 
         // Atualizar fundo
@@ -830,7 +822,6 @@
                     return;
                 }
 
-                respostas.push(resposta);
                 resultadoDiv.innerHTML = `<div class="mensagem-resultado">${p.mensagem}</div>`;
                 textarea.disabled = true;
                 btnEnviar.disabled = true;
@@ -890,4 +881,5 @@
                     das estrelas, de Harry Potter e de todas as perguntas do mundo...<br><br>
                     <strong style="font-size:1.3rem;">Só tem uma resposta que realmente importa.</strong>
                 </p>
-                <p style="
+                <p style="font-size:1.5rem; font-weight:bold; color:#c0392b; margin:20px 0;">
+                    Você quer namorar comigo
